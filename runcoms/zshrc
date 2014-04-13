@@ -12,3 +12,395 @@ fi
 
 # Customize to your needs...
 
+#######################################################################################################
+#{{{ Basic
+# LANG
+export LANG=ja_JP.UTF-8
+export LC_CTYPE="ja_JP.UTF-8"
+
+# right prompt
+function pyenv_info {
+    if which pyenv > /dev/null 2>&1; then
+        pyenv version | sed -e 's/ .*//'
+    fi
+}
+function rbenv_info {
+    if which rbenv > /dev/null 2>&1; then
+        rbenv version | sed -e 's/ .*//'
+    fi
+}
+RPROMPT='[$(pyenv_info)] ($(rbenv_info))'
+
+# tmux powerline
+[ ! -d ~/.tmux-powerline ] && git clone git@github.com:yukimemi/tmux-powerline.git ~/.tmux-powerline
+ln -sf ~/.tmux-powerline/.tmux-powerlinerc ~/
+PS1="$PS1"'$([ -n "$TMUX" ] && tmux setenv TMUXPWD_$(tmux display -p "#D" | tr -d %) "$PWD")'
+# }}}
+#######################################################################################################
+#{{{ key bind
+#bindkey -v
+
+# zsh vi key command line stack - Qiita
+# http://qiita.com/items/1f2c7793944b1f6cc346
+show_buffer_stack() {
+    POSTDISPLAY="
+    stack: $LBUFFER"
+    zle push-line-or-edit
+}
+zle -N show_buffer_stack
+setopt noflowcontrol
+bindkey '^Q' show_buffer_stack
+
+# move at hjkl on menu select
+zmodload zsh/complist
+bindkey -M menuselect 'h' vi-backward-char
+bindkey -M menuselect 'j' vi-down-line-or-history
+bindkey -M menuselect 'k' vi-up-line-or-history
+bindkey -M menuselect 'l' vi-forward-char
+
+# history backward search
+autoload -Uz history-search-end
+zle -N history-beginning-search-backward-end history-search-end
+zle -N history-beginning-search-forward-end history-search-end
+bindkey "" history-beginning-search-backward-end
+bindkey "" history-beginning-search-forward-end
+# }}}
+#######################################################################################################
+#{{{ history
+if [ -d ~/Dropbox ]; then
+    HISTFILE=~/Dropbox/.zsh_history
+else
+    HISTFILE=~/.zsh_history
+fi
+
+setopt share_history
+setopt append_history
+setopt hist_ignore_all_dups
+setopt hist_ignore_dups
+setopt hist_save_no_dups
+setopt extended_history
+setopt hist_ignore_space
+setopt hist_verify
+[ ! -d ~/.zsh/cache ] && mkdir -p ~/.zsh/cache
+zstyle ':completion:*' use-cache yes
+zstyle ':completion:*' cache-path ~/.zsh/cache
+# }}}
+#######################################################################################################
+#{{{ alias
+# setting for OS type
+case "${OSTYPE}" in
+    freebsd*|darwin*)
+        alias ls='ls --color=auto'
+        #alias vim='env LANG=ja_JP.UTF-8 /Applications/MacVim.app/Contents/MacOS/Vim "$@"'
+        alias rm=rmtrash
+        alias empty-trash='sudo /bin/rm -rf ~/.Trash/*; sudo /bin/rm -rf ~/.Trash/.*'
+        alias shitamplayer='mplayer -fixed-vo -framedrop -ontop -geometry 100%:100%'
+        alias vlc='open -a ~/Applications/VLC.app "$@"'
+        alias screensaver='open /System/Library/Frameworks/ScreenSaver.framework/Resources/ScreenSaverEngine.app'
+        alias nw="~/Applications/node-webkit.app/Contents/MacOS/node-webkit"
+        ;;
+    linux*|cygwin)
+        alias ls='ls --color=auto'
+        alias rm=trash-cli
+        alias open=cygstart
+        ;;
+esac
+
+alias vimfiler='vim -c VimFilerDouble'
+alias mvimfiler='mvim -c VimFilerDouble'
+alias vimshell='vim -c VimShell'
+alias mvimshell='mvim -c VimShell'
+alias tweetvim='vim +TweetVimUserStream'
+alias mtweetvim='mvim +TweetVimUserStream'
+alias diff=colordiff
+alias mv='mv -iv'
+alias cp='cp -iv'
+alias ll='ls -lh'
+alias lla='ls -al'
+alias exifany="exiftool '-FileName < CreateDate' -d /Volumes/new/backup/any/%Y-%m/%Y-%m-%d_%H-%M-%S%%-c.%%e *.*"
+alias exifMov="exiftool '-FileName < CreateDate' -d /Volumes/new/backup/Mov/%Y-%m/%Y-%m-%d_%H-%M-%S%%-c.%%e *.(MOV|mov)"
+alias exifJpg="exiftool '-FileName < CreateDate' -d /Volumes/new/backup/Photos/%Y-%m/%Y-%m-%d_%H-%M-%S%%-c.%%e *.(JPG|jpg)"
+alias exifRecCreateDate="exiftool -r '-FileName < CreateDate' -d /Volumes/new/backup/Photos/%Y-%m/%Y-%m-%d_%H-%M-%S%%-c.%%e ."
+alias exifModifyJpg="exiftool '-FileName < FileModifyDate' -d /Volumes/new/backup/IMG/%Y-%m/%Y-%m-%d_%H-%M-%S%%-c.%%e *.(JPG|jpg)"
+alias exifRecFileModifyDate="exiftool -r '-FileName < FileModifyDate' -d /Volumes/new/backup/Photos/%Y-%m/%Y-%m-%d_%H-%M-%S%%-c.%%e ."
+alias exifPng="exiftool '-FileName < FileModifyDate' -d /Volumes/new/backup/Photos/%Y-%m/%Y-%m-%d_%H-%M-%S%%-c.%%e *.(png|PNG)"
+alias exifM2ts="exiftool '-FileName < DateTimeOriginal' -d /Volumes/new/backup/m2ts/%Y-%m/%Y-%m-%d_%H-%M-%S%%-c.%%e *.(m2ts|M2TS)"
+alias exifRecDateTimeOriginal="exiftool -r '-FileName < DateTimeOriginal' -d /Volumes/new/backup/m2ts/%Y-%m/%Y-%m-%d_%H-%M-%S%%-c.%%e ."
+
+# global alias
+alias -g L=' | lv'
+alias -g G=' | grep'
+# }}}
+#######################################################################################################
+#{{{ function
+function chpwd() { ls -F }
+
+# http://www.gitignore.io/cli
+function gi() { curl http://www.gitignore.io/api/$@ ;}
+
+function google() {# {{{
+    local str opt
+    if [ $ != 0 ]; then
+        for i in $*; do
+            str="$str+$i"
+        done
+        str=`echo $str | sed 's/^\+//'`
+        opt='search?num=50&hl=ja&lr=lang_ja'
+        opt="${opt}&q=${str}"
+    fi
+    w3m http://www.google.co.jp/$opt
+}
+# }}}
+
+function alc() {# {{{
+    if [ $ != 0 ]; then
+        w3m "http://eow.alc.co.jp/$*/UTF-8/?ref=sa"
+    else
+        w3m "http://www.alc.co.jp/"
+    fi
+}
+# }}}
+
+cdup() {# {{{
+    if [ -z "$BUFFER" ]; then
+        echo
+        cd ..
+        #chpwd
+        if type precmd > /dev/null 2>&1; then
+            precmd
+        fi
+        local precmd_func
+        for precmd_func in $precmd_functions; do
+            $precmd_func
+        done
+        zle reset-prompt
+    else
+        zle self-insert '^'
+    fi
+}
+zle -N cdup
+bindkey '^^' cdup
+# }}}
+
+# print NORMAL or INSERT mode# {{{
+readuntil () {
+    typeset a
+    while [ "$a" != "$1" ]
+    do
+        read -E -k 1 a
+    done
+}
+
+#
+# If the $SHOWMODE variable is set, displays the vi mode, specified by
+# the $VIMODE variable, under the current command line.
+#
+# Arguments:
+#
+#   1 (optional): Beyond normal calculations, the number of additional
+#   lines to move down before printing the mode.  Defaults to zero.
+#
+showmode() {
+    typeset movedown
+    typeset row
+
+    # Get number of lines down to print mode
+    movedown=$(($(echo "$RBUFFER" | wc -l) + ${1:-0}))
+
+    # Get current row position
+    echo -n "\e[6n"
+    row="${${$(readuntil R)#*\[}%;*}"
+
+    # Are we at the bottom of the terminal?
+    if [ $((row+movedown)) -gt "$LINES" ]
+    then
+        # Scroll terminal up one line
+        echo -n "\e[1S"
+
+        # Move cursor up one line
+        echo -n "\e[1A"
+    fi
+
+    # Save cursor position
+    echo -n "\e[s"
+
+    # Move cursor to start of line $movedown lines down
+    echo -n "\e[$movedown;E"
+
+    # Change font attributes
+    echo -n "\e[1m"
+
+    # Has a mode been set?
+    if [ -n "$VIMODE" ]
+    then
+        # Print mode line
+        echo -n "-- $VIMODE -- "
+    else
+        # Clear mode line
+        echo -n "\e[0K"
+    fi
+
+    # Restore font
+    echo -n "\e[0m"
+
+    # Restore cursor position
+    echo -n "\e[u"
+}
+
+clearmode() {
+    VIMODE= showmode
+}
+
+#
+# Temporary function to extend built-in widgets to display mode.
+#
+#   1: The name of the widget.
+#
+#   2: The mode string.
+#
+#   3 (optional): Beyond normal calculations, the number of additional
+#   lines to move down before printing the mode.  Defaults to zero.
+#
+makemodal () {
+    # Create new function
+    eval "$1() { zle .'$1'; ${2:+VIMODE='$2'}; showmode $3 }"
+
+    # Create new widget
+    zle -N "$1"
+}
+
+# Extend widgets
+makemodal vi-add-eol           INSERT
+makemodal vi-add-next          INSERT
+makemodal vi-change            INSERT
+makemodal vi-change-eol        INSERT
+makemodal vi-change-whole-line INSERT
+makemodal vi-insert            INSERT
+makemodal vi-insert-bol        INSERT
+makemodal vi-open-line-above   INSERT
+makemodal vi-substitute        INSERT
+makemodal vi-open-line-below   INSERT 1
+makemodal vi-replace           REPLACE
+makemodal vi-cmd-mode          NORMAL
+
+unfunction makemodal
+# }}}
+
+# copy to clipboard (require pbcopy on mac and xcel on linux)# {{{
+# Example
+# % vim mail.txt
+# % cat mail.txt C
+# copy line from 10 to 15 in the INPUT.txt
+# % sed -n '10,15p' INPUT.txt C
+if which pbcopy >/dev/null 2>&1 ; then
+    # Mac
+    alias -g C='| pbcopy'
+elif which xsel >/dev/null 2>&1 ; then
+    # Linux
+    alias -g C='| xsel --input --clipboard'
+elif which putclip >/dev/null 2>&1 ; then
+    # Cygwin
+    alias -g C='| putclip'
+fi
+# }}}
+
+# print command under the screen# {{{
+if [ "$TERM" = "screen" ]; then
+    #     chpwd () { echo -n "_`dirs`\\" }
+    preexec() {
+        #         see [zsh-workers:13180]
+        #         http://www.zsh.org/mla/workers/2000/msg03993.html
+        emulate -L zsh
+        local -a cmd; cmd=(${(z)2})
+        case $cmd[1] in
+            fg)
+                if (( $#cmd == 1 )); then
+                    cmd=(builtin jobs -l %+)
+                else
+                    cmd=(builtin jobs -l $cmd[2])
+                fi
+                ;;
+            %*)
+                cmd=(builtin jobs -l $cmd[1])
+                ;;
+            cd)
+                if (( $#cmd == 2)); then
+                    cmd[1]=$cmd[2]
+                fi
+                ;&
+            *)
+                echo -n "k$cmd[1]:t\\"
+                return
+                ;;
+        esac
+
+        local -A jt; jt=(${(kv)jobtexts})
+
+        $cmd >>(read num rest
+        cmd=(${(z)${(e):-\$jt$num}})
+        echo -n "k$cmd[1]:t\\") 2>/dev/null
+    }
+    #     chpwd
+fi
+# }}}
+
+############# only mac #########################
+# copy Japanese language on pbcopy# {{{
+#__CF_USER_TEXT_ENCODING=0x1F5:1:14    # original value
+if [ $OSTYPE = "darwin*" ]; then
+    __CF_USER_TEXT_ENCODING=0x1F5:0x8000100:14
+    export __CF_USER_TEXT_ENCODING
+fi
+# }}}
+
+# notification at Growl over 30 seconds# {{{
+if [ $OSTYPE = "darwin*" ]; then
+    local COMMAND=""
+    local COMMAND_TIME=""
+    precmd() {
+        if [ "$COMMAND_TIME" -ne "0" ] ; then
+            local d=`date +%s`
+            d=`expr $d - $COMMAND_TIME`
+            if [ "$d" -ge "30" ] ; then
+                COMMAND="$COMMAND "
+                growlnotify -t "${${(s: :)COMMAND}[1]}" -m "$COMMAND"
+            fi
+        fi
+        COMMAND="0"
+        COMMAND_TIME="0"
+    }
+    preexec () {
+        COMMAND="${1}"
+        COMMAND_TIME=`date +%s`
+    }
+fi
+# }}}
+# }}}
+#######################################################################################################
+#{{{ plugins
+# zaw
+[[ ! -d "${HOME}/.zaw" ]] && git clone https://github.com/zsh-users/zaw.git ~/.zaw
+zstyle ':filter-select' case-insensitive yes
+autoload -Uz chpwd_recent_dirs cdr add-zsh-hook
+add-zsh-hook chpwd chpwd_recent_dirs
+zstyle ':chpwd:*' recent-dirs-max 5000
+zstyle ':chpwd:*' recent-dirs-default yes
+zstyle ':completion:*' recent-dirs-insert both
+source ~/.zaw/zaw.zsh
+# bindkey
+bindkey '^@' zaw-cdr
+bindkey '^R' zaw-history
+bindkey '^X^F' zaw-git-files
+bindkey '^X^B' zaw-git-branches
+bindkey '^X^P' zaw-process
+bindkey '^A' zaw-tmux
+# }}}
+#######################################################################################################
+#{{{ local conf
+if [ -e ~/.zshrc_private ]; then
+    source ~/.zshrc_private
+fi
+# }}}
+
+# ssh
+# export SSH_KEY_PATH="~/.ssh/dsa_id"

@@ -10,3 +10,139 @@ if [[ "$SHLVL" -eq 1 && ! -o LOGIN && -s "${ZDOTDIR:-$HOME}/.zprofile" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprofile"
 fi
 
+#######################################################################################################
+#{{{ env setting
+# if not running interactively, don't do anything
+[ -z "$PS1" ] && return
+
+# SHELL
+export SHELL=zsh
+
+# path setting
+typeset -U path
+path=(
+    # ~/bin/
+    $HOME/bin(N-/)
+    $HOME/bin/scripts(N-/)
+    $HOME/local/bin(N-/)
+    # coreutils
+    /usr/local/opt/coreutils/libexec/gnubin(N-/)
+    $path
+)
+
+typeset -xT SUDO_PATH sudo_path
+typeset -U sudo_path
+sudo_path=({,/usr/pkg,/usr/local,/usr}/sbin(N-/))
+
+# man
+typeset -U manpath
+manpath=(
+    # user
+    $HOME/local/share/man(N-/)
+    # Homebrew
+    /usr/local/opt/coreutils/libexec/gnuman(N-/)
+    # system
+    /usr/local/share/man(N-/)
+    /usr/share/man(N-/)
+    $manpath
+)
+
+# PAGER
+if type lv > /dev/null 2>&1; then
+    ## use lv if exist
+    export PAGER="lv"
+else
+    export PAGER="less"
+fi
+
+# lv setting
+export LV="-c -l"
+
+if [ "$PAGER" != "lv" ]; then
+    alias lv="$PAGER"
+fi
+
+# less setting
+export LESS="-R"
+
+# bashmarks.sh
+[ -e "$HOME/.local/bin/bashmarks.sh" ] && source ~/.local/bin/bashmarks.sh
+
+# This loads RVM into a shell session.
+[ -s "${HOME}/.rvm/scripts/rvm" ] && source "${HOME}/.rvm/scripts/rvm"
+
+# Haxe
+if which brew > /dev/null; then
+    [ -d "$(brew --prefix)/share/haxe/std" ] && export HAXE_LIBRARY_PATH="$(brew --prefix)/share/haxe/std"
+fi
+
+# anyenv
+[ ! -d $HOME/.anyenv ] && git clone https://github.com/riywo/anyenv ~/.anyenv
+export PATH=$HOME/.anyenv/bin:$PATH
+eval "$(anyenv init -)"
+[ ! -d $HOME/.anyenv/plugins ] && mkdir -p $HOME/.anyenv/plugins
+[ ! -d $HOME/.anyenv/plugins/anyenv-update ] && git clone https://github.com/znz/anyenv-update.git ~/.anyenv/plugins/anyenv-update
+# pyenv plugins
+[ -d $HOME/.anyenv/envs/pyenv ] && [ ! -d $HOME/.anyenv/envs/pyenv/plugins/pyenv-virtualenv ] && git clone https://github.com/yyuu/pyenv-virtualenv.git ~/.anyenv/envs/pyenv/plugins/pyenv-virtualenv
+# rbenv plugins
+[ -d $HOME/.anyenv/envs/rbenv ] && [ ! -d $HOME/.anyenv/envs/rbenv/plugins/rbenv-binstubs ] && git clone git://github.com/ianheggie/rbenv-binstubs.git ~/.anyenv/envs/rbenv/plugins/rbenv-binstubs
+
+# lein
+[ ! -s $HOME/bin/lein ] && curl https://raw.github.com/technomancy/leiningen/stable/bin/lein -o ~/bin/lein && chmod +x ~/bin/lein
+export LEIN_JVM_OPTS="-Djline.terminal=jline.UnixTerminal"
+
+# screeninator
+#[ -s "$HOME/.rbenv/shims/screeninator" ] && source "$HOME/.rbenv/shims/screeninator"
+
+# tmuxinator
+[ -s $HOME/.tmuxinator/scripts/tmuxinator ] && source $HOME/.tmuxinator/scripts/tmuxinator
+
+# hub
+if which hub > /dev/null; then
+    eval "$(hub alias -s)"
+fi
+
+# CLASSPATH
+typeset -U CLASSPATH
+# mac
+if [ `uname` = "Darwin" ]; then
+    # JAVA_HOME
+    export JAVA_HOME=$(/usr/libexec/java_home)
+    # CATALINA_HOME
+    export CATALINA_HOME="/usr/local/Cellar/tomcat/7.0.14/libexec"
+    # Java
+    #export CLASSPATH="$CLASSPATH:$JAVA_HOME:$JAVA_HOME/lib:$JAVA_HOME/lib/ext"
+fi
+
+# Java encoding
+export JAVA_OPTS='-Dfile.encoding=UTF-8'
+
+# fpath
+typeset -U fpath
+fpath=(/usr/local/share/zsh-completions(N-/) $fpath)
+
+# boxen
+[ -f /opt/boxen/env.sh ] && source /opt/boxen/env.sh
+
+# go
+export GOPATH=$HOME/.go
+[ ! -d $HOME/.go ] && mkdir $HOME/.go
+if which go > /dev/null; then
+    export GOROOT=$(go env GOROOT)
+    #go get github.com/nsf/gocode
+    #go get github.com/golang/lint
+    #go get github.com/jstemmer/gotags
+    #go get code.google.com/p/go.tools/cmd/goimports
+    #go get code.google.com/p/go.tools/cmd/godoc
+    #go get code.google.com/p/go.tools/cmd/vet
+    #go get code.google.com/p/go.tools/cmd/cover
+
+    # vim-godef
+    #go get -v code.google.com/p/rog-go/exp/cmd/godef
+    #go install -v code.google.com/p/rog-go/exp/cmd/godef
+
+    # goquery
+    #go get github.com/PuerkitoBio/goquery
+fi
+#}}}
+#######################################################################################################
