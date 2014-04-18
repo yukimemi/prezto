@@ -183,6 +183,7 @@ bindkey '^^' cdup
 # }}}
 
 # print NORMAL or INSERT mode# {{{
+:<<'#COMMENT'
 readuntil () {
     typeset a
     while [ "$a" != "$1" ]
@@ -284,6 +285,7 @@ makemodal vi-replace           REPLACE
 makemodal vi-cmd-mode          NORMAL
 
 unfunction makemodal
+#COMMENT
 # }}}
 
 # copy to clipboard (require pbcopy on mac and xcel on linux)# {{{
