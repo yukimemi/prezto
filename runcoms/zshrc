@@ -112,6 +112,7 @@ alias vimshell='vim -c VimShell'
 alias mvimshell='mvim -c VimShell'
 alias tweetvim='vim +TweetVimUserStream'
 alias mtweetvim='mvim +TweetVimUserStream'
+alias neobundleupdate='vim +NeoBundleInstall! +q'
 alias diff=colordiff
 alias mv='mv -iv'
 alias cp='cp -iv'
