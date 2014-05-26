@@ -382,7 +382,7 @@ fi
 #######################################################################################################
 #{{{ plugins
 # zaw
-[[ ! -d "${HOME}/.zaw" ]] && git clone https://github.com/zsh-users/zaw.git ~/.zaw
+[ ! -d "${HOME}/.zaw" ] && git clone https://github.com/zsh-users/zaw.git ~/.zaw
 zstyle ':filter-select' case-insensitive yes
 autoload -Uz chpwd_recent_dirs cdr add-zsh-hook
 add-zsh-hook chpwd chpwd_recent_dirs
