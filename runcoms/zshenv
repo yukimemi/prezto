@@ -89,6 +89,17 @@ eval "$(anyenv init -)"
 # rbenv plugins
 [ -d $HOME/.anyenv/envs/rbenv ] && [ ! -d $HOME/.anyenv/envs/rbenv/plugins/rbenv-binstubs ] && git clone git://github.com/ianheggie/rbenv-binstubs.git ~/.anyenv/envs/rbenv/plugins/rbenv-binstubs
 
+# direnv
+if which go > /dev/null; then
+    if [ ! -d $HOME/.direnv ]; then
+        git clone http://github.com/zimbatm/direnv ~/.direnv
+        pushd ~/.direnv
+        make install
+        popd
+    fi
+    eval "$(direnv hook zsh)"
+fi
+
 # lein
 [ ! -s $HOME/bin/lein ] && curl https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein -o ~/bin/lein && chmod +x ~/bin/lein
 export LEIN_JVM_OPTS="-Djline.terminal=jline.UnixTerminal"
@@ -98,6 +109,10 @@ export LEIN_JVM_OPTS="-Djline.terminal=jline.UnixTerminal"
 
 # tmuxinator
 [ -s $HOME/.tmuxinator/scripts/tmuxinator ] && source $HOME/.tmuxinator/scripts/tmuxinator
+
+# unite-screen.sh
+[ ! -s $HOME/.unite-screen.sh/unite-screen ] && git clone https://github.com/tyru/unite-screen.sh.git ~/.unite-screen.sh
+ln -sf ~/.unite-screen.sh/unite-screen ~/bin/
 
 # hub
 if which hub > /dev/null; then
