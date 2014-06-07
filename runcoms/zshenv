@@ -143,6 +143,8 @@ fpath=(/usr/local/share/zsh-completions(N-/) $fpath)
 
 # go
 export GOPATH=$HOME/.go
+export PATH=$GOPATH/bin:$PATH
+
 [ ! -d $HOME/.go ] && mkdir $HOME/.go
 if which go > /dev/null; then
     export GOROOT=$(go env GOROOT)
@@ -160,6 +162,10 @@ if which go > /dev/null; then
 
     # goquery
     #go get github.com/PuerkitoBio/goquery
+
+    # ghq
+    go get github.com/motemen/ghq
+    git config --global ghq.root ~/.ghq
 fi
 #}}}
 #######################################################################################################
