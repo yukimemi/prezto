@@ -35,6 +35,11 @@ RPROMPT='[$(pyenv_info)] ($(rbenv_info))'
 [ ! -d ~/.tmux-powerline ] && git clone git@github.com:yukimemi/tmux-powerline.git ~/.tmux-powerline
 ln -sf ~/.tmux-powerline/.tmux-powerlinerc ~/
 PS1="$PS1"'$([ -n "$TMUX" ] && tmux setenv TMUXPWD_$(tmux display -p "#D" | tr -d %) "$PWD")'
+
+# compile zshrc
+if [ ! -f ~/.zshrc.zwc -o ~/.zshrc -nt ~/.zshrc.zwc ]; then
+    zcompile ~/.zshrc
+fi
 # }}}
 #######################################################################################################
 #{{{ key bind
@@ -383,22 +388,67 @@ fi
 # }}}
 #######################################################################################################
 #{{{ plugins
-# zaw
-[ ! -d "${HOME}/.zaw" ] && git clone https://github.com/zsh-users/zaw.git ~/.zaw
 zstyle ':filter-select' case-insensitive yes
 autoload -Uz chpwd_recent_dirs cdr add-zsh-hook
 add-zsh-hook chpwd chpwd_recent_dirs
 zstyle ':chpwd:*' recent-dirs-max 5000
 zstyle ':chpwd:*' recent-dirs-default yes
 zstyle ':completion:*' recent-dirs-insert both
-source ~/.zaw/zaw.zsh
-# bindkey
-bindkey '^@' zaw-cdr
-bindkey '^R' zaw-history
-bindkey '^X^F' zaw-git-files
-bindkey '^X^B' zaw-git-branches
-bindkey '^X^P' zaw-process
-bindkey '^A' zaw-tmux
+
+# # zaw # {{{
+# [ ! -d "${HOME}/.zaw" ] && git clone https://github.com/zsh-users/zaw.git ~/.zaw
+# source ~/.zaw/zaw.zsh
+# # bindkey
+# bindkey '^@' zaw-cdr
+# bindkey '^R' zaw-history
+# bindkey '^X^F' zaw-git-files
+# bindkey '^X^B' zaw-git-branches
+# bindkey '^X^P' zaw-process
+# bindkey '^A' zaw-tmux
+# }}}
+
+# peco # {{{
+function peco-select-history() {
+    local tac
+    if which tac > /dev/null; then
+        tac="tac"
+    else
+        tac="tail -r"
+    fi
+    BUFFER=$(history -n 1 | \
+        eval $tac | \
+        peco --query "$LBUFFER")
+    CURSOR=$#BUFFER
+    zle clear-screen
+}
+zle -N peco-select-history
+
+function peco-cdr () {
+    local selected_dir=$(cdr -l | awk '{ print $2 }' | peco)
+    if [ -n "$selected_dir" ]; then
+        BUFFER="cd ${selected_dir}"
+        zle accept-line
+    fi
+    zle clear-screen
+}
+zle -N peco-cdr
+
+function peco-snippets() {
+    BUFFER=$(grep -v "^#" ~/.peco-snippets | peco --query "$LBUFFER")
+    zle clear-screen
+}
+zle -N peco-snippets
+
+bindkey '^r' peco-select-history
+bindkey '^@' peco-cdr
+bindkey '^s' peco-snippets
+
+# ghq
+alias ghl='cd $(ghq list -p | peco)'
+alias gho='gh-open $(ghq list -p | peco)'
+alias pvim='vim "$(find . -type f | peco)"'
+# }}}
+
 # }}}
 #######################################################################################################
 #{{{ local conf
