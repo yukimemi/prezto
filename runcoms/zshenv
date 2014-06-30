@@ -109,6 +109,9 @@ fi
 [ ! -s $HOME/bin/lein ] && curl https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein -o ~/bin/lein && chmod +x ~/bin/lein
 export LEIN_JVM_OPTS="-Djline.terminal=jline.UnixTerminal"
 
+# pecrant
+[ ! -s $HOME/bin/pecrant ] && curl https://raw.githubusercontent.com/gongo/pecrant/master/pecrant -o ~/bin/pecrant && chmod +x ~/bin/pecrant
+
 # screeninator
 #[ -s "$HOME/.rbenv/shims/screeninator" ] && source "$HOME/.rbenv/shims/screeninator"
 

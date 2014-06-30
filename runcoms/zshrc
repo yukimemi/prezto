@@ -447,6 +447,7 @@ bindkey '^s' peco-snippets
 alias ghl='cd $(ghq list -p | peco)'
 alias gho='gh-open $(ghq list -p | peco)'
 alias pvim='vim "$(find . -type f | peco)"'
+alias pcd='cd "$(find . -type d | peco)"'
 # }}}
 
 # }}}
