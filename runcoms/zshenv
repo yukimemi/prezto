@@ -111,6 +111,7 @@ export LEIN_JVM_OPTS="-Djline.terminal=jline.UnixTerminal"
 
 # pecrant
 [ ! -s $HOME/bin/pecrant ] && curl https://raw.githubusercontent.com/gongo/pecrant/master/pecrant -o ~/bin/pecrant && chmod +x ~/bin/pecrant
+alias veco='pecrant'
 
 # screeninator
 #[ -s "$HOME/.rbenv/shims/screeninator" ] && source "$HOME/.rbenv/shims/screeninator"
