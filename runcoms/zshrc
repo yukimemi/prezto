@@ -439,15 +439,30 @@ function peco-snippets() {
 }
 zle -N peco-snippets
 
+function peco-proc () {
+    ps ax -o pid,lstart,command | peco --query "$LBUFFER" | awk '{print $1}' | xargs kill
+    zle clear-screen
+}
+zle -N peco-proc
+
 bindkey '^r' peco-select-history
 bindkey '^@' peco-cdr
 bindkey '^s' peco-snippets
 
+unalias p
+function p() {
+    peco | while read line
+    do
+        $@ $line
+    done
+}
+
 # ghq
-alias ghl='cd $(ghq list -p | peco)'
-alias gho='gh-open $(ghq list -p | peco)'
+alias ghl='ghq list -p | p cd'
+alias gho='ghq list -p | p gh-open'
 alias pvim='vim "$(find . -type f | peco)"'
-alias pcd='cd "$(find . -type d | peco)"'
+alias pcd='find . -type d | p cd'
+alias pk=peco-proc
 # }}}
 
 # }}}

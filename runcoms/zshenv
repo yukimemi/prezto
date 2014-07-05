@@ -97,7 +97,7 @@ eval "$(anyenv init -)"
 # direnv
 if which go > /dev/null; then
     if [ ! -d $HOME/.direnv ]; then
-        git clone http://github.com/zimbatm/direnv ~/.direnv
+        git clone https://github.com/zimbatm/direnv ~/.direnv
         pushd ~/.direnv
         make install
         popd
