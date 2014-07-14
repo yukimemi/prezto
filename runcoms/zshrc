@@ -138,6 +138,7 @@ alias exifRecDateTimeOriginal="exiftool -r '-FileName < DateTimeOriginal' -d /Vo
 # global alias
 alias -g L=' | lv'
 alias -g G=' | grep'
+alias -g P=' | peco'
 # }}}
 #######################################################################################################
 #{{{ function
@@ -423,7 +424,7 @@ function peco-select-history() {
 }
 zle -N peco-select-history
 
-function peco-cdr () {
+function peco-cdr() {
     local selected_dir=$(cdr -l | awk '{ print $2 }' | peco)
     if [ -n "$selected_dir" ]; then
         BUFFER="cd ${selected_dir}"
@@ -439,11 +440,18 @@ function peco-snippets() {
 }
 zle -N peco-snippets
 
-function peco-proc () {
+function peco-proc() {
     ps ax -o pid,lstart,command | peco --query "$LBUFFER" | awk '{print $1}' | xargs kill
     zle clear-screen
 }
 zle -N peco-proc
+function agvim() {
+    if [ "$1" = "" ]; then
+        ag . | peco --query "$LBUFFER" | awk -F : '{system("vim -c " $2 " " "\"" $1 "\"")}'
+    else
+        ag $@ | peco --query "$LBUFFER" | awk -F : '{system("vim -c " $2 " " "\"" $1 "\"")}'
+    fi
+}
 
 bindkey '^r' peco-select-history
 bindkey '^@' peco-cdr

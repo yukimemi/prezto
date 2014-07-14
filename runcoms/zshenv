@@ -164,8 +164,25 @@ if which go > /dev/null; then
     # ghq
     go get github.com/motemen/ghq
     git config --global ghq.root ~/.ghq
+
     # peco
     go get github.com/peco/peco/cmd/peco
+    if [ ! -d $HOME/.peco ]; then
+        mkdir $HOME/.peco
+cat <<'_EOT_' >> $HOME/.peco/config.json
+{
+    "CustomMatcher": {
+        "Migemo": [
+            "migemogrep",
+            "$QUERY"
+        ]
+    }
+}
+_EOT_
+    fi
+    # gomigemo
+    go get github.com/koron/gomigemo/cmd/gmigemo
+    go get github.com/koron/gomigemo/cmd/migemogrep
     # gh-open
     go get github.com/typester/gh-open
 
