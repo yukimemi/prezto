@@ -182,7 +182,7 @@ _EOT_
     fi
     # gomigemo
     go get github.com/koron/gomigemo/cmd/gmigemo
-    go get github.com/koron/gomigemo/cmd/migemogrep
+    go get github.com/peco/migemogrep
     # gh-open
     go get github.com/typester/gh-open
 
