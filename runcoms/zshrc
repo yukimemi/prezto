@@ -441,7 +441,7 @@ function peco-snippets() {
 zle -N peco-snippets
 
 function peco-proc() {
-    ps ax -o pid,lstart,command | peco --query "$LBUFFER" | awk '{print $1}' | xargs kill
+    ps ax -o pid,lstart,command | peco --query "$LBUFFER" | awk '{print $1}' | xargs kill -9
     zle clear-screen
 }
 zle -N peco-proc
@@ -456,6 +456,7 @@ function agvim() {
 bindkey '^r' peco-select-history
 bindkey '^@' peco-cdr
 bindkey '^s' peco-snippets
+bindkey '^k' peco-proc
 
 unalias p
 function p() {
