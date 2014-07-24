@@ -187,5 +187,21 @@ _EOT_
     go get github.com/typester/gh-open
 
 fi
+
+#}}}
+#######################################################################################################
+#{{{ app setting
+# vimperator
+[ ! -d ~/.vimperator/plugin ] && mkdir -p ~/.vimperator/plugin
+if which ghq > /dev/null ; then
+    [ ! -d ~/.ghq/github.com/caisui/vimperator ] && ghq get git://github.com/caisui/vimperator.git
+    [ ! -d ~/.ghq/gist.github.com/377348 ] && ghq get git://gist.github.com/377348.git
+    [ ! -d ~/.ghq/github.com/vimpr/vimperator-rc ] && ghq get git://github.com/vimpr/vimperator-rc.git
+    [ ! -d ~/.ghq/github.com/petitviolet/vimp-plugins ] && ghq get https://github.com/petitviolet/vimp-plugins
+    [ ! -d ~/.ghq/github.com/vimpr/vimperator-plugins ] && ghq get git://github.com/vimpr/vimperator-plugins.git
+    [ ! -d ~/.ghq/github.com/Jagua/vimperator-plugins-sample ] && ghq get git://github.com/Jagua/vimperator-plugins-sample
+    ln -sf ~/.ghq/github.com/vimpr/vimperator-plugins/plugin_loader.js ~/.vimperator/plugin/
+    ln -sf ~/.ghq/github.com/vimpr/vimperator-rc/anekos/colors ~/.vimperator/
+fi
 #}}}
 #######################################################################################################
