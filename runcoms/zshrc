@@ -475,9 +475,11 @@ function p() {
 # ghq
 alias ghl='ghq list -p | p cd'
 alias gho='ghq list -p | p gh-open'
+
 alias pvim='vim "$(find . -type f | peco)"'
 alias pcd='find . -type d | p cd'
 alias pk=peco-proc
+alias vcd='cd $(pecrant dir)'
 # }}}
 
 # }}}
