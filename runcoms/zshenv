@@ -32,6 +32,8 @@ path=(
     $HOME/local/bin(N-/)
     # coreutils
     /usr/local/opt/coreutils/libexec/gnubin(N-/)
+    # homebrew
+    /usr/local/bin(N-/)
     # cabal
     $HOME/.cabal/bin(N-/)
     $path

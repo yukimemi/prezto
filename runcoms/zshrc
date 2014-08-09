@@ -29,7 +29,12 @@ function rbenv_info {
         rbenv version | sed -e 's/ .*//'
     fi
 }
-RPROMPT='[$(pyenv_info)] ($(rbenv_info))'
+function ndenv_info {
+    if which ndenv > /dev/null 2>&1; then
+        ndenv version | sed -e 's/ .*//'
+    fi
+}
+RPROMPT='[$(pyenv_info)] ($(rbenv_info)) <$(ndenv_info)>'
 
 # tmux powerline
 [ ! -d ~/.tmux-powerline ] && git clone git@github.com:yukimemi/tmux-powerline.git ~/.tmux-powerline
@@ -118,6 +123,7 @@ alias mvimshell='mvim -c VimShell'
 alias tweetvim='vim +TweetVimUserStream'
 alias mtweetvim='mvim +TweetVimUserStream'
 alias lingrvim='vim +LingrLaunch'
+alias j6uil='vim +J6uil'
 alias chalice='vim +Chalice'
 alias neobundleupdate='vim +NeoBundleInstall! +q'
 alias diff=colordiff
