@@ -159,13 +159,14 @@ export PATH=$GOPATH/bin:$PATH
 [ ! -d $GOPATH ] && mkdir $GOPATH
 if which go > /dev/null; then
     export GOROOT=$(go env GOROOT)
+    export PATH=$GOROOT/bin:$PATH
 
     # goquery
     #go get github.com/PuerkitoBio/goquery
 
     # ghq
     go get github.com/motemen/ghq
-    git config --global ghq.root ~/.ghq
+    git config --global ghq.root ~/.ghq/src
 
     # peco
     go get github.com/peco/peco/cmd/peco
@@ -187,7 +188,8 @@ _EOT_
     go get github.com/peco/migemogrep
     # gh-open
     go get github.com/typester/gh-open
-
+    # GoDoc
+    go get code.google.com/p/go.tools/cmd/godoc
 fi
 
 #}}}
@@ -196,14 +198,14 @@ fi
 # vimperator
 [ ! -d ~/.vimperator/plugin ] && mkdir -p ~/.vimperator/plugin
 if which ghq > /dev/null ; then
-    [ ! -d ~/.ghq/github.com/caisui/vimperator ] && ghq get git://github.com/caisui/vimperator.git
-    [ ! -d ~/.ghq/gist.github.com/377348 ] && ghq get git://gist.github.com/377348.git
-    [ ! -d ~/.ghq/github.com/vimpr/vimperator-rc ] && ghq get git://github.com/vimpr/vimperator-rc.git
-    [ ! -d ~/.ghq/github.com/petitviolet/vimp-plugins ] && ghq get https://github.com/petitviolet/vimp-plugins
-    [ ! -d ~/.ghq/github.com/vimpr/vimperator-plugins ] && ghq get git://github.com/vimpr/vimperator-plugins.git
-    [ ! -d ~/.ghq/github.com/Jagua/vimperator-plugins-sample ] && ghq get git://github.com/Jagua/vimperator-plugins-sample
-    ln -sf ~/.ghq/github.com/vimpr/vimperator-plugins/plugin_loader.js ~/.vimperator/plugin/
-    ln -sf ~/.ghq/github.com/vimpr/vimperator-rc/anekos/colors ~/.vimperator/
+    [ ! -d ~/.ghq/src/github.com/caisui/vimperator ] && ghq get git://github.com/caisui/vimperator.git
+    [ ! -d ~/.ghq/src/gist.github.com/377348 ] && ghq get git://gist.github.com/377348.git
+    [ ! -d ~/.ghq/src/github.com/vimpr/vimperator-rc ] && ghq get git://github.com/vimpr/vimperator-rc.git
+    [ ! -d ~/.ghq/src/github.com/petitviolet/vimp-plugins ] && ghq get https://github.com/petitviolet/vimp-plugins
+    [ ! -d ~/.ghq/src/github.com/vimpr/vimperator-plugins ] && ghq get git://github.com/vimpr/vimperator-plugins.git
+    [ ! -d ~/.ghq/src/github.com/Jagua/vimperator-plugins-sample ] && ghq get git://github.com/Jagua/vimperator-plugins-sample
+    ln -sf ~/.ghq/src/github.com/vimpr/vimperator-plugins/plugin_loader.js ~/.vimperator/plugin/
+    ln -sf ~/.ghq/src/github.com/vimpr/vimperator-rc/anekos/colors ~/.vimperator/
 fi
 #}}}
 #######################################################################################################
