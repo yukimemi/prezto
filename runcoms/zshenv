@@ -121,6 +121,9 @@ alias veco='pecrant'
 # tmuxinator
 [ -s $HOME/.tmuxinator/scripts/tmuxinator ] && source $HOME/.tmuxinator/scripts/tmuxinator
 
+# tmux plugin manager
+[ ! -d $HOME/.tmux/plugins/tpm ] && git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+
 # unite-screen.sh
 [ ! -s $HOME/.unite-screen.sh/unite-screen ] && git clone https://github.com/tyru/unite-screen.sh.git ~/.unite-screen.sh
 ln -sf ~/.unite-screen.sh/unite-screen ~/bin/
@@ -167,6 +170,8 @@ if which go > /dev/null; then
     # ghq
     go get github.com/motemen/ghq
     git config --global ghq.root ~/.ghq/src
+    [ ! -d $HOME/.ghq ] && mkdir ~/.ghq
+    [ ! -f $HOME/.ghq/.envrc ] && echo "layout go\npath_add GOPATH .direnv/go" >> ~/.ghq/.envrc
 
     # peco
     go get github.com/peco/peco/cmd/peco
