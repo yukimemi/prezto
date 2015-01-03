@@ -194,8 +194,11 @@ _EOT_
     # gh-open
     go get github.com/typester/gh-open
     # GoDoc
-    go get code.google.com/p/go.tools/cmd/godoc
+    go get golang.org/x/tools/cmd/godoc
 fi
+
+# android sdk
+[ -d $HOME/bin/android-sdk-macosx/platform-tools ] && export PATH=$PATH:$HOME/bin/android-sdk-macosx/platform-tools
 
 #}}}
 #######################################################################################################

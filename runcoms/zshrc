@@ -424,7 +424,7 @@ function peco-select-history() {
     fi
     BUFFER=$(history -n 1 | \
         eval $tac | \
-        peco --query "$LBUFFER")
+        peco)
     CURSOR=$#BUFFER
     zle clear-screen
 }
@@ -441,21 +441,22 @@ function peco-cdr() {
 zle -N peco-cdr
 
 function peco-snippets() {
-    BUFFER=$(grep -v "^#" ~/.peco-snippets | peco --query "$LBUFFER")
+    BUFFER=$(grep -v "^#" ~/.peco-snippets | peco)
     zle clear-screen
 }
 zle -N peco-snippets
 
 function peco-proc() {
-    ps ax -o pid,lstart,command | peco --query "$LBUFFER" | awk '{print $1}' | xargs kill -9
+    ps ax -o pid,lstart,command | peco | awk '{print $1}' | xargs kill -9
     zle clear-screen
 }
 zle -N peco-proc
+
 function agvim() {
     if [ "$1" = "" ]; then
-        ag . | peco --query "$LBUFFER" | awk -F : '{system("vim -c " $2 " " "\"" $1 "\"")}'
+        ag . | peco | awk -F : '{system("vim -c " $2 " " "\"" $1 "\"")}'
     else
-        ag $@ | peco --query "$LBUFFER" | awk -F : '{system("vim -c " $2 " " "\"" $1 "\"")}'
+        ag $@ | peco | awk -F : '{system("vim -c " $2 " " "\"" $1 "\"")}'
     fi
 }
 
