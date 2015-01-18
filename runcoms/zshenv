@@ -162,7 +162,7 @@ export PATH=$GOPATH/bin:$PATH
 [ ! -d $GOPATH ] && mkdir $GOPATH
 if which go > /dev/null; then
     export GOROOT=$(go env GOROOT)
-    export PATH=$GOROOT/bin:$PATH
+    export PATH=$PATH:$GOROOT/bin
 
     # goquery
     #go get github.com/PuerkitoBio/goquery
