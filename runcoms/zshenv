@@ -168,13 +168,15 @@ if which go > /dev/null; then
     #go get github.com/PuerkitoBio/goquery
 
     # ghq
-    go get github.com/motemen/ghq
-    git config --global ghq.root ~/.ghq/src
+    if ! which ghq > /dev/null; then
+      go get github.com/motemen/ghq
+      git config --global ghq.root ~/.ghq/src
+    fi
     [ ! -d $HOME/.ghq ] && mkdir ~/.ghq
     [ ! -f $HOME/.ghq/.envrc ] && echo "layout go\npath_add GOPATH .direnv/go" >> ~/.ghq/.envrc
 
     # peco
-    go get github.com/peco/peco/cmd/peco
+    [ ! $(command -v peco) ] && go get github.com/peco/peco/cmd/peco
     if [ ! -d $HOME/.peco ]; then
         mkdir $HOME/.peco
 cat <<'_EOT_' >> $HOME/.peco/config.json
@@ -189,12 +191,12 @@ cat <<'_EOT_' >> $HOME/.peco/config.json
 _EOT_
     fi
     # gomigemo
-    go get github.com/koron/gomigemo/cmd/gmigemo
-    go get github.com/peco/migemogrep
+    [ ! $(command -v gmigemo) ] && go get github.com/koron/gomigemo/cmd/gmigemo
+    [ ! $(command -v migemogrep) ] && go get github.com/peco/migemogrep
     # gh-open
-    go get github.com/typester/gh-open
+    [ ! $(command -v gh-open) ] && go get github.com/typester/gh-open
     # GoDoc
-    go get golang.org/x/tools/cmd/godoc
+    [ ! $(command -v godoc) ] && go get golang.org/x/tools/cmd/godoc
 fi
 
 # android sdk
