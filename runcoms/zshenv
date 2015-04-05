@@ -133,6 +133,12 @@ if which hub > /dev/null; then
     eval "$(hub alias -s)"
 fi
 
+# anyframe
+[ ! -d $HOME/.zsh/anyframe ] && git clone https://github.com/mollifier/anyframe.git ~/.zsh/anyframe
+fpath=($HOME/.zsh/anyframe(N-/) $fpath)
+autoload -Uz anyframe-init
+anyframe-init
+
 # CLASSPATH
 typeset -U CLASSPATH
 # mac
