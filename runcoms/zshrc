@@ -116,7 +116,7 @@ case "${OSTYPE}" in
         ;;
     linux*|cygwin)
         alias ls='ls --color=auto'
-        alias rm=trash-cli
+        alias rm=trash
         alias open=cygstart
         ;;
 esac

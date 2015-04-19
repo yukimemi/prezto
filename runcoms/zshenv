@@ -101,7 +101,7 @@ if which go > /dev/null; then
     if [ ! -d $HOME/.direnv ]; then
         git clone https://github.com/zimbatm/direnv ~/.direnv
         pushd ~/.direnv
-        make install
+        sudo make install
         popd
     fi
     eval "$(direnv hook zsh)"
@@ -185,16 +185,6 @@ if which go > /dev/null; then
     [ ! $(command -v peco) ] && go get github.com/peco/peco/cmd/peco
     if [ ! -d $HOME/.peco ]; then
         mkdir $HOME/.peco
-cat <<'_EOT_' >> $HOME/.peco/config.json
-{
-    "CustomMatcher": {
-        "Migemo": [
-            "migemogrep",
-            "$QUERY"
-        ]
-    }
-}
-_EOT_
     fi
     # gomigemo
     [ ! $(command -v gmigemo) ] && go get github.com/koron/gomigemo/cmd/gmigemo
