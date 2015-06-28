@@ -107,7 +107,6 @@ case "${OSTYPE}" in
     freebsd*|darwin*)
         alias ls='ls --color=auto'
         #alias vim='env LANG=ja_JP.UTF-8 /Applications/MacVim.app/Contents/MacOS/Vim "$@"'
-        alias rm=rmtrash
         alias empty-trash='sudo /bin/rm -rf ~/.Trash/*; sudo /bin/rm -rf ~/.Trash/.*'
         alias shitamplayer='mplayer -fixed-vo -framedrop -ontop -geometry 100%:100%'
         alias vlc='open -a ~/Applications/VLC.app "$@"'
@@ -116,11 +115,12 @@ case "${OSTYPE}" in
         ;;
     linux*|cygwin)
         alias ls='ls --color=auto'
-        alias rm=trash
-        alias open=cygstart
+        alias open=gnome-open
+        alias tmux='tmux -2'
         ;;
 esac
 
+alias rm='gomi'
 alias vimfiler='vim -c VimFilerDouble'
 alias mvimfiler='mvim -c VimFilerDouble'
 alias vimshell='vim -c VimShell'
@@ -483,7 +483,7 @@ function p() {
 alias ghl='ghq list -p | p cd'
 alias gho='ghq list -p | p gh-open'
 
-alias pvim='vim "$(find . -type f | peco)"'
+alias pvim='find . -type f | p vim'
 alias pcd='find . -type d | p cd'
 alias pk=peco-proc
 alias vcd='cd $(pecrant dir)'

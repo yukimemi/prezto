@@ -23,11 +23,15 @@ fi
 # SHELL
 export SHELL=zsh
 
+# EDITOR
+export EDITOR=vim
+
 # path setting
 typeset -U path
 path=(
     # ~/bin/
     $HOME/bin(N-/)
+    $HOME/.local/bin(N-/)
     $HOME/bin/scripts(N-/)
     $HOME/local/bin(N-/)
     # coreutils
@@ -195,6 +199,8 @@ if which go > /dev/null; then
     [ ! $(command -v godoc) ] && go get golang.org/x/tools/cmd/godoc
     # jvgrep
     [ ! $(command -v jvgrep) ] && go get github.com/mattn/jvgrep
+    # gomi
+    [ ! $(command -v gomi) ] && go get github.com/b4b4r07/gomi
 fi
 
 # android sdk
