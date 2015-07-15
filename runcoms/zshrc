@@ -39,12 +39,12 @@ function goenv_info {
         goenv version | sed -e 's/ .*//'
     fi
 }
-RPROMPT='[$(pyenv_info)] ($(rbenv_info)) <$(ndenv_info)> {$(goenv_info)}'
+RPROMPT+='  [$(pyenv_info)] ($(rbenv_info)) <$(ndenv_info)> {$(goenv_info)}'
 
 # tmux powerline
-[ ! -d ~/.tmux-powerline ] && git clone git@github.com:yukimemi/tmux-powerline.git ~/.tmux-powerline
-ln -sf ~/.tmux-powerline/.tmux-powerlinerc ~/
-PS1="$PS1"'$([ -n "$TMUX" ] && tmux setenv TMUXPWD_$(tmux display -p "#D" | tr -d %) "$PWD")'
+# [ ! -d ~/.tmux-powerline ] && git clone git@github.com:yukimemi/tmux-powerline.git ~/.tmux-powerline
+# ln -sf ~/.tmux-powerline/.tmux-powerlinerc ~/
+# PS1="$PS1"'$([ -n "$TMUX" ] && tmux setenv TMUXPWD_$(tmux display -p "#D" | tr -d %) "$PWD")'
 
 # compile zshrc
 if [ ! -f ~/.zshrc.zwc -o ~/.zshrc -nt ~/.zshrc.zwc ]; then
