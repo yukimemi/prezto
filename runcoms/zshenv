@@ -201,6 +201,8 @@ if which go > /dev/null; then
     [ ! $(command -v jvgrep) ] && go get github.com/mattn/jvgrep
     # gomi
     [ ! $(command -v gomi) ] && go get github.com/b4b4r07/gomi
+    # mkup
+    [ ! $(command -v mkup) ] && go get github.com/mattn/mkup
 fi
 
 # android sdk
