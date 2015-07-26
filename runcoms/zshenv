@@ -210,14 +210,4 @@ fi
 
 #}}}
 #######################################################################################################
-#{{{ app setting
-# vimperator
-[ ! -d ~/.vimperator/plugin ] && mkdir -p ~/.vimperator/plugin
-if which ghq > /dev/null ; then
-    [ ! -d ~/.ghq/src/github.com/vimpr/vimperator-rc ] && ghq get git://github.com/vimpr/vimperator-rc.git
-    # ln -sfn ~/.ghq/src/github.com/vimpr/vimperator-rc/anekos/colors ~/.vimperator/
-    ln -sfn ~/.ghq/src/github.com/vimpr/vimperator-colors ~/.vimperator/colors
-fi
-#}}}
-#######################################################################################################
 
