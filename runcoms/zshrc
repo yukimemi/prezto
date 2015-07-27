@@ -421,42 +421,11 @@ zstyle ':completion:*' recent-dirs-insert both
 # }}}
 
 # peco # {{{
-function peco-select-history() {
-    local tac
-    if which tac > /dev/null; then
-        tac="tac"
-    else
-        tac="tail -r"
-    fi
-    BUFFER=$(history -n 1 | \
-        eval $tac | \
-        peco)
-    CURSOR=$#BUFFER
-    zle clear-screen
-}
-zle -N peco-select-history
-
-function peco-cdr() {
-    local selected_dir=$(cdr -l | awk '{ print $2 }' | peco)
-    if [ -n "$selected_dir" ]; then
-        BUFFER="cd ${selected_dir}"
-        zle accept-line
-    fi
-    zle clear-screen
-}
-zle -N peco-cdr
-
 function peco-snippets() {
     BUFFER=$(grep -v "^#" ~/.peco-snippets | peco)
     zle clear-screen
 }
 zle -N peco-snippets
-
-function peco-proc() {
-    ps ax -o pid,lstart,command | peco | awk '{print $1}' | xargs kill -9
-    zle clear-screen
-}
-zle -N peco-proc
 
 function agvim() {
     if [ "$1" = "" ]; then
@@ -465,11 +434,15 @@ function agvim() {
         ag $@ | peco | awk -F : '{system("vim -c " $2 " " "\"" $1 "\"")}'
     fi
 }
-
-bindkey '^r' peco-select-history
-bindkey '^@' peco-cdr
 bindkey '^s' peco-snippets
-bindkey '^k' peco-proc
+
+# Use anyframe
+bindkey '^r' anyframe-widget-put-history
+bindkey '^@' anyframe-widget-cdr
+bindkey '^k' anyframe-widget-kill
+bindkey '^b' anyframe-widget-insert-git-branch
+bindkey '^f' anyframe-widget-insert-filename
+bindkey '^a' anyframe-widget-select-widget
 
 unalias p
 function p() {
