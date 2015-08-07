@@ -156,9 +156,6 @@ alias -g P=' | peco'
 #{{{ function
 function chpwd() { ls -F }
 
-# http://www.gitignore.io/cli
-function gi() { curl http://www.gitignore.io/api/$@ ;}
-
 #function google() {# {{{
     #local str opt
     #if [ $ != 0 ]; then
