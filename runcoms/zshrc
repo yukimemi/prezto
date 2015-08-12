@@ -431,6 +431,13 @@ function agvim() {
         ag $@ | peco | awk -F : '{system("vim -c " $2 " " "\"" $1 "\"")}'
     fi
 }
+function jvvim() {
+    if [ "$1" = "" ]; then
+        jvgrep . | peco | awk -F : '{system("vim -c " $2 " " "\"" $1 "\"")}'
+    else
+        jvgrep $@ . | peco | awk -F : '{system("vim -c " $2 " " "\"" $1 "\"")}'
+    fi
+}
 bindkey '^s' peco-snippets
 
 # Use anyframe
