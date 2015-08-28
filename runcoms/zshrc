@@ -112,6 +112,7 @@ case "${OSTYPE}" in
         alias vlc='open -a ~/Applications/VLC.app "$@"'
         alias screensaver='open /System/Library/Frameworks/ScreenSaver.framework/Resources/ScreenSaverEngine.app'
         alias nw="~/Applications/node-webkit.app/Contents/MacOS/node-webkit"
+        alias mplayerx='open -a MplayerX'
         ;;
     linux*|cygwin)
         alias ls='ls --color=auto'
@@ -363,6 +364,11 @@ if [ "$TERM" = "screen" ]; then
     #     chpwd
 fi
 # }}}
+
+gitio()
+{
+  curl -i http://git.io -F "url=$1" -F "code=$2"
+}
 
 ############# only mac #########################
 # copy Japanese language on pbcopy# {{{

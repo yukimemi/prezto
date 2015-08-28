@@ -168,7 +168,7 @@ fpath=(/usr/local/share/zsh-completions(N-/) $fpath)
 [ -f /opt/boxen/env.sh ] && source /opt/boxen/env.sh
 
 # go
-export GOPATH=$HOME/.go
+export GOPATH=$HOME/.ghq
 export PATH=$GOPATH/bin:$PATH
 
 [ ! -d $GOPATH ] && mkdir $GOPATH
@@ -184,8 +184,6 @@ if which go > /dev/null; then
     go get github.com/motemen/ghq
     git config --global ghq.root ~/.ghq/src
   fi
-  [ ! -d $HOME/.ghq ] && mkdir ~/.ghq
-  [ ! -f $HOME/.ghq/.envrc ] && echo "layout go\npath_add GOPATH .direnv/go" >> ~/.ghq/.envrc
 
   # peco
   [ ! $(command -v peco) ] && go get github.com/peco/peco/cmd/peco
