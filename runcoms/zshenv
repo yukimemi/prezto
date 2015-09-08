@@ -25,6 +25,7 @@ export SHELL=zsh
 
 # EDITOR
 export EDITOR=vim
+export VISUAL=vim
 
 # path setting
 typeset -U path
