@@ -156,6 +156,8 @@ if [ `uname` = "Darwin" ]; then
   export CATALINA_HOME="/usr/local/Cellar/tomcat/7.0.14/libexec"
   # Java
   #export CLASSPATH="$CLASSPATH:$JAVA_HOME:$JAVA_HOME/lib:$JAVA_HOME/lib/ext"
+  # Homebrew cask
+  export HOMEBREW_CASK_OPTS="--appdir=/Applications"
 fi
 
 # Java encoding
