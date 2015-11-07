@@ -103,6 +103,11 @@ eval "$(anyenv init -)"
 # rbenv plugins
 [ -d $HOME/.anyenv/envs/rbenv ] && [ ! -d $HOME/.anyenv/envs/rbenv/plugins/rbenv-binstubs ] && git clone git://github.com/ianheggie/rbenv-binstubs.git ~/.anyenv/envs/rbenv/plugins/rbenv-binstubs
 
+# node
+if which npm > /dev/null; then
+  [ ! $(command -v js-beautify) ] && npm i -g js-beautify
+fi
+
 # direnv
 if which go > /dev/null; then
   if [ ! -d $HOME/.direnv ]; then
