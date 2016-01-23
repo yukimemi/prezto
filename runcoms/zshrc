@@ -472,6 +472,14 @@ alias pk=peco-proc
 alias vcd='cd $(pecrant dir)'
 # }}}
 
+# zplug
+[ ! -d $HOME/.zplug ] && curl -fLo ~/.zplug/zplug --create-dirs git.io/zplug
+source ~/.zplug/zplug
+zplug "zsh-users/zsh-syntax-highlighting"
+zplug "zsh-users/zsh-history-substring-search"
+zplug "junegunn/fzf-bin", as:command, from:gh-r, file:fzf
+zplug "mattn/files", do:"go get github.com/mattn/files"
+
 # }}}
 #######################################################################################################
 #{{{ local conf
