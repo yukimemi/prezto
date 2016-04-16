@@ -41,11 +41,6 @@ function goenv_info {
 }
 RPROMPT+='  [$(pyenv_info)] ($(rbenv_info)) <$(ndenv_info)> {$(goenv_info)}'
 
-# tmux powerline
-# [ ! -d ~/.tmux-powerline ] && git clone git@github.com:yukimemi/tmux-powerline.git ~/.tmux-powerline
-# ln -sf ~/.tmux-powerline/.tmux-powerlinerc ~/
-# PS1="$PS1"'$([ -n "$TMUX" ] && tmux setenv TMUXPWD_$(tmux display -p "#D" | tr -d %) "$PWD")'
-
 # compile zshrc
 if [ ! -f ~/.zshrc.zwc -o ~/.zshrc -nt ~/.zshrc.zwc ]; then
     zcompile ~/.zshrc
@@ -74,11 +69,13 @@ bindkey -M menuselect 'k' vi-up-line-or-history
 bindkey -M menuselect 'l' vi-forward-char
 
 # history backward search
-autoload -Uz history-search-end
-zle -N history-beginning-search-backward-end history-search-end
-zle -N history-beginning-search-forward-end history-search-end
-bindkey "" history-beginning-search-backward-end
-bindkey "" history-beginning-search-forward-end
+# autoload -Uz history-search-end
+# zle -N history-beginning-search-backward-end history-search-end
+# zle -N history-beginning-search-forward-end history-search-end
+# bindkey "" history-beginning-search-backward-end
+# bindkey "" history-beginning-search-forward-end
+bindkey '^P' history-substring-search-up
+bindkey '^N' history-substring-search-down
 # }}}
 #######################################################################################################
 #{{{ history
@@ -121,7 +118,7 @@ case "${OSTYPE}" in
         ;;
 esac
 
-alias rm='gomi'
+# alias rm='gomi'
 alias vimfiler='vim -c VimFilerDouble'
 alias mvimfiler='mvim -c VimFilerDouble'
 alias vimshell='vim -c VimShell'
@@ -134,8 +131,8 @@ alias chalice='vim +Chalice'
 # alias neobundleupdate='vim +NeoBundleInstall! +q'
 alias neobundleupdate='vim -c "Unite neobundle/update -no-start-insert -no-split"'
 alias diff=colordiff
-alias mv='mv -iv'
-alias cp='cp -iv'
+# alias mv='mv -iv'
+# alias cp='cp -iv'
 alias ll='ls -lh'
 alias lla='ls -al'
 alias exifany="exiftool '-FileName < CreateDate' -d /Volumes/new/backup/any/%Y-%m/%Y-%m-%d_%H-%M-%S%%-c.%%e *.*"
@@ -345,7 +342,7 @@ if [ "$TERM" = "screen" ]; then
                 cmd=(builtin jobs -l $cmd[1])
                 ;;
             cd)
-                if (( $#cmd == 2)); then
+                if (( $#cmd == 2 )); then
                     cmd[1]=$cmd[2]
                 fi
                 ;&
@@ -361,7 +358,6 @@ if [ "$TERM" = "screen" ]; then
         cmd=(${(z)${(e):-\$jt$num}})
         echo -n "k$cmd[1]:t\\") 2>/dev/null
     }
-    #     chpwd
 fi
 # }}}
 
@@ -378,29 +374,6 @@ if [ $OSTYPE = "darwin*" ]; then
     export __CF_USER_TEXT_ENCODING
 fi
 # }}}
-
-# notification at Growl over 30 seconds# {{{
-if [ $OSTYPE = "darwin*" ]; then
-    local COMMAND=""
-    local COMMAND_TIME=""
-    precmd() {
-        if [ "$COMMAND_TIME" -ne "0" ] ; then
-            local d=`date +%s`
-            d=`expr $d - $COMMAND_TIME`
-            if [ "$d" -ge "30" ] ; then
-                COMMAND="$COMMAND "
-                growlnotify -t "${${(s: :)COMMAND}[1]}" -m "$COMMAND"
-            fi
-        fi
-        COMMAND="0"
-        COMMAND_TIME="0"
-    }
-    preexec () {
-        COMMAND="${1}"
-        COMMAND_TIME=`date +%s`
-    }
-fi
-# }}}
 # }}}
 #######################################################################################################
 #{{{ plugins
@@ -410,18 +383,6 @@ add-zsh-hook chpwd chpwd_recent_dirs
 zstyle ':chpwd:*' recent-dirs-max 5000
 zstyle ':chpwd:*' recent-dirs-default yes
 zstyle ':completion:*' recent-dirs-insert both
-
-# # zaw # {{{
-# [ ! -d "${HOME}/.zaw" ] && git clone https://github.com/zsh-users/zaw.git ~/.zaw
-# source ~/.zaw/zaw.zsh
-# # bindkey
-# bindkey '^@' zaw-cdr
-# bindkey '^R' zaw-history
-# bindkey '^X^F' zaw-git-files
-# bindkey '^X^B' zaw-git-branches
-# bindkey '^X^P' zaw-process
-# bindkey '^A' zaw-tmux
-# }}}
 
 # peco # {{{
 function peco-snippets() {
@@ -473,13 +434,34 @@ alias vcd='cd $(pecrant dir)'
 # }}}
 
 # zplug
-[ ! -d $HOME/.zplug ] && curl -fLo ~/.zplug/zplug --create-dirs git.io/zplug
+[[ -d ~/.zplug ]] || {
+  curl -fLo ~/.zplug/zplug --create-dirs https://git.io/zplug
+  source ~/.zplug/zplug && zplug update --self
+}
 source ~/.zplug/zplug
-zplug "zsh-users/zsh-syntax-highlighting"
+zplug "mollifier/anyframe"
+zplug "mollifier/cd-gitroot"
+zplug "stedolan/jq", from:gh-r, as:command \
+    | zplug "b4b4r07/emoji-cli", if:"which jq"
+zplug "b4b4r07/enhancd", of:enhancd.sh
+zplug "hchbaw/opp.zsh", do:"__zsh_version 5.0.8"
+zplug "zsh-users/zsh-syntax-highlighting", nice:10
 zplug "zsh-users/zsh-history-substring-search"
 zplug "junegunn/fzf-bin", as:command, from:gh-r, file:fzf
+zplug "peco/peco", as:command, from:gh-r, of:"*amd64*"
+zplug "b4b4r07/zsh-gomi"
 zplug "mattn/files", do:"go get github.com/mattn/files"
+zplug "zsh-users/zsh-completions"
 
+if ! zplug check --verbose; then
+  printf "Install? [y/N]: "
+  if read -q; then
+      echo; zplug install
+  else
+      echo
+  fi
+fi
+zplug load
 # }}}
 #######################################################################################################
 #{{{ local conf

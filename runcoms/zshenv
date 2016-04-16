@@ -11,215 +11,175 @@ if [[ "$SHLVL" -eq 1 && ! -o LOGIN && -s "${ZDOTDIR:-$HOME}/.zprofile" ]]; then
 fi
 
 #######################################################################################################
-#{{{ env setting
 # if not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
-# compile zshrc
+# Useful functions.# {{{
+is_linux() { [[ $SHELL_PLATFORM == 'linux' || $SHELL_PLATFORM == 'bsd' ]]; }
+is_osx() { [[ $SHELL_PLATFORM == 'osx' ]]; }
+is_bsd() { [[ $SHELL_PLATFORM == 'bsd' || $SHELL_PLATFORM == 'osx' ]]; }
+is_cygwin() { [[ $SHELL_PLATFORM == 'cygwin' ]]; }
+# }}}
+
+# Env setting# {{{
+
+# Compile zshrc.
 if [ ! -f ~/.zshenv.zwc -o ~/.zshenv -nt ~/.zshenv.zwc ]; then
   zcompile ~/.zshenv
 fi
 
-# SHELL
 export SHELL=zsh
-
-# EDITOR
 export EDITOR=vim
 export VISUAL=vim
+export PAGER="less"
 
-# path setting
-typeset -U path
+# Unique path.
+typeset -U path cdpath fpath manpath
+
 path=(
-# ~/bin/
-$HOME/bin(N-/)
-$HOME/.local/bin(N-/)
-$HOME/bin/scripts(N-/)
-$HOME/local/bin(N-/)
-# coreutils
-/usr/local/opt/coreutils/libexec/gnubin(N-/)
-# gnu-sed
-/usr/local/opt/gnu-sed/libexec/gnubin(N-/)
-# homebrew
-/usr/local/bin(N-/)
-# cabal
-$HOME/.cabal/bin(N-/)
-$path
+  # Home.
+  $HOME/bin(N-/)
+  $HOME/.local/bin(N-/)
+  $HOME/bin/scripts(N-/)
+  $HOME/local/bin(N-/)
+  # coreutils.
+  /usr/local/opt/coreutils/libexec/gnubin(N-/)
+  # gnu-sed.
+  /usr/local/opt/gnu-sed/libexec/gnubin(N-/)
+  # homebrew.
+  /usr/local/bin(N-/)
+  # cabal.
+  $HOME/.cabal/bin(N-/)
+  $path
 )
 
+manpath=(
+  # user.
+  $HOME/local/share/man(N-/)
+  # Homebrew.
+  /usr/local/opt/coreutils/libexec/gnuman(N-/)
+  # system.
+  /usr/local/share/man(N-/)
+  /usr/share/man(N-/)
+  $manpath
+)
+
+fpath=(
+  /usr/local/share/zsh-completions(N-/)
+  $fpath
+)
+
+# sudo path.
 typeset -xT SUDO_PATH sudo_path
 typeset -U sudo_path
-sudo_path=({,/usr/pkg,/usr/local,/usr}/sbin(N-/))
-
-# man
-typeset -U manpath
-manpath=(
-# user
-$HOME/local/share/man(N-/)
-# Homebrew
-/usr/local/opt/coreutils/libexec/gnuman(N-/)
-# system
-/usr/local/share/man(N-/)
-/usr/share/man(N-/)
-$manpath
+sudo_path=(
+  {,/usr/pkg,/usr/local,/usr}/sbin(N-/)
 )
 
-# PAGER
-if type lv > /dev/null 2>&1; then
-  ## use lv if exist
-  export PAGER="lv"
-else
-  export PAGER="less"
-fi
+# less settings.
+export LESS='-gj10 --no-init --quit-if-one-screen --RAW-CONTROL-CHARS'
+export LESSOPEN='| /usr/local/bin/src-hilite-lesspipe.sh %s'
 
-# lv setting
-export LV="-c -l"
-
-if [ "$PAGER" != "lv" ]; then
-  alias lv="$PAGER"
-fi
-
-# less setting
-export LESS="-R"
-
-# bashmarks.sh
-[ -e "$HOME/.local/bin/bashmarks.sh" ] && source ~/.local/bin/bashmarks.sh
-
-# This loads RVM into a shell session.
-[ -s "${HOME}/.rvm/scripts/rvm" ] && source "${HOME}/.rvm/scripts/rvm"
-
-# Haxe
-if which brew > /dev/null; then
-  [ -d "$(brew --prefix)/share/haxe/std" ] && export HAXE_LIBRARY_PATH="$(brew --prefix)/share/haxe/std"
-fi
-
-# anyenv
-[ ! -d $HOME/.anyenv ] && git clone https://github.com/riywo/anyenv ~/.anyenv
-export PATH=$HOME/.anyenv/bin:$PATH
-eval "$(anyenv init -)"
-[ ! -d $HOME/.anyenv/plugins ] && mkdir -p $HOME/.anyenv/plugins
-[ ! -d $HOME/.anyenv/plugins/anyenv-update ] && git clone https://github.com/znz/anyenv-update.git ~/.anyenv/plugins/anyenv-update
-# pyenv plugins
-[ -d $HOME/.anyenv/envs/pyenv ] && [ ! -d $HOME/.anyenv/envs/pyenv/plugins/pyenv-virtualenv ] && git clone https://github.com/yyuu/pyenv-virtualenv.git ~/.anyenv/envs/pyenv/plugins/pyenv-virtualenv
-# rbenv plugins
-[ -d $HOME/.anyenv/envs/rbenv ] && [ ! -d $HOME/.anyenv/envs/rbenv/plugins/rbenv-binstubs ] && git clone git://github.com/ianheggie/rbenv-binstubs.git ~/.anyenv/envs/rbenv/plugins/rbenv-binstubs
-
-# node
-if which npm > /dev/null; then
-  [ ! $(command -v js-beautify) ] && npm i -g js-beautify
-fi
-
-# direnv
-if which go > /dev/null; then
-  if [ ! -d $HOME/.direnv ]; then
-    git clone https://github.com/zimbatm/direnv ~/.direnv
-    pushd ~/.direnv
-    sudo make install
-    popd
-  fi
-  eval "$(direnv hook zsh)"
-fi
-
-# lein
-[ ! -s $HOME/bin/lein ] && curl https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein -o ~/bin/lein && chmod +x ~/bin/lein
-export LEIN_JVM_OPTS="-Djline.terminal=jline.UnixTerminal"
-
-# pecrant
-[ ! -s $HOME/bin/pecrant ] && curl https://raw.githubusercontent.com/gongo/pecrant/master/pecrant -o ~/bin/pecrant && chmod +x ~/bin/pecrant
-alias veco='pecrant'
-
-# screeninator
-#[ -s "$HOME/.rbenv/shims/screeninator" ] && source "$HOME/.rbenv/shims/screeninator"
-
-# tmuxinator
-[ -s $HOME/.tmuxinator/scripts/tmuxinator ] && source $HOME/.tmuxinator/scripts/tmuxinator
-
-# tmux plugin manager
-[ ! -d $HOME/.tmux/plugins/tpm ] && git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-
-# unite-screen.sh
-[ ! -s $HOME/.unite-screen.sh/unite-screen ] && git clone https://github.com/tyru/unite-screen.sh.git ~/.unite-screen.sh
-ln -sf ~/.unite-screen.sh/unite-screen ~/bin/
-
-# hub
-if which hub > /dev/null; then
-  eval "$(hub alias -s)"
-fi
-
-# anyframe
-[ ! -d $HOME/.zsh/anyframe ] && git clone https://github.com/mollifier/anyframe.git ~/.zsh/anyframe
-fpath=($HOME/.zsh/anyframe(N-/) $fpath)
-autoload -Uz anyframe-init
-anyframe-init
-
-# CLASSPATH
-typeset -U CLASSPATH
-# mac
-if [ `uname` = "Darwin" ]; then
-  # JAVA_HOME
-  export JAVA_HOME=$(/usr/libexec/java_home)
-  # CATALINA_HOME
-  export CATALINA_HOME="/usr/local/Cellar/tomcat/7.0.14/libexec"
-  # Java
-  #export CLASSPATH="$CLASSPATH:$JAVA_HOME:$JAVA_HOME/lib:$JAVA_HOME/lib/ext"
-  # Homebrew cask
+# Homebrew.
+if is_osx; then
   export HOMEBREW_CASK_OPTS="--appdir=/Applications"
 fi
 
 # Java encoding
 export JAVA_OPTS='-Dfile.encoding=UTF-8'
 
-# fpath
-typeset -U fpath
-fpath=(/usr/local/share/zsh-completions(N-/) $fpath)
-
-# boxen
-[ -f /opt/boxen/env.sh ] && source /opt/boxen/env.sh
-
 # go
 export GOPATH=$HOME/.ghq
-export PATH=$GOPATH/bin:$PATH
+export PATH=$PATH:$GOPATH/bin
+export GOROOT=$(go env GOROOT)
+export PATH=$PATH:$GOROOT/bin
 
-[ ! -d $GOPATH ] && mkdir $GOPATH
-if which go > /dev/null; then
-  export GOROOT=$(go env GOROOT)
-  export PATH=$PATH:$GOROOT/bin
 
-  # goquery
-  #go get github.com/PuerkitoBio/goquery
 
-  # ghq
-  if ! which ghq > /dev/null; then
-    go get github.com/motemen/ghq
-    git config --global ghq.root ~/.ghq/src
-  fi
 
-  # peco
-  [ ! $(command -v peco) ] && go get github.com/peco/peco/cmd/peco
-  if [ ! -d $HOME/.peco ]; then
-    mkdir $HOME/.peco
-  fi
-  # gomigemo
-  [ ! $(command -v gmigemo) ] && go get github.com/koron/gomigemo/cmd/gmigemo
-  [ ! $(command -v migemogrep) ] && go get github.com/peco/migemogrep
-  # gh-open
-  [ ! $(command -v gh-open) ] && go get github.com/typester/gh-open
-  # GoDoc
-  [ ! $(command -v godoc) ] && go get golang.org/x/tools/cmd/godoc
-  # jvgrep
-  [ ! $(command -v jvgrep) ] && go get github.com/mattn/jvgrep
-  # gomi
-  [ ! $(command -v gomi) ] && go get github.com/b4b4r07/gomi
-  # mkup
-  [ ! $(command -v mkup) ] && go get github.com/mattn/mkup
 
-  # gitignore
-  function _gi() { curl -s https://www.gitignore.io/api/$1 ;}
-  alias gi='_gi $(_gi list | sed "s/,/\n/g" | peco )'
-fi
+# anyenv
+# [ ! -d $HOME/.anyenv ] && git clone https://github.com/riywo/anyenv ~/.anyenv
+# export PATH=$HOME/.anyenv/bin:$PATH
+# eval "$(anyenv init -)"
+# [ ! -d $HOME/.anyenv/plugins ] && mkdir -p $HOME/.anyenv/plugins
+# [ ! -d $HOME/.anyenv/plugins/anyenv-update ] && git clone https://github.com/znz/anyenv-update.git ~/.anyenv/plugins/anyenv-update
+# pyenv plugins
+# [ -d $HOME/.anyenv/envs/pyenv ] && [ ! -d $HOME/.anyenv/envs/pyenv/plugins/pyenv-virtualenv ] && git clone https://github.com/yyuu/pyenv-virtualenv.git ~/.anyenv/envs/pyenv/plugins/pyenv-virtualenv
+# rbenv plugins
+# [ -d $HOME/.anyenv/envs/rbenv ] && [ ! -d $HOME/.anyenv/envs/rbenv/plugins/rbenv-binstubs ] && git clone git://github.com/ianheggie/rbenv-binstubs.git ~/.anyenv/envs/rbenv/plugins/rbenv-binstubs
 
-# android sdk
-[ -d $HOME/bin/android-sdk-macosx/platform-tools ] && export PATH=$PATH:$HOME/bin/android-sdk-macosx/platform-tools
+# node
+# if which npm > /dev/null; then
+#   [ ! $(command -v js-beautify) ] && npm i -g js-beautify
+# fi
 
-#}}}
+# direnv
+# if which go > /dev/null; then
+#   if [ ! -d $HOME/.direnv ]; then
+#     git clone https://github.com/zimbatm/direnv ~/.direnv
+#     pushd ~/.direnv
+#     sudo make install
+#     popd
+#   fi
+#   eval "$(direnv hook zsh)"
+# fi
+
+# lein
+# [ ! -s $HOME/bin/lein ] && curl https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein -o ~/bin/lein && chmod +x ~/bin/lein
+# export LEIN_JVM_OPTS="-Djline.terminal=jline.UnixTerminal"
+
+# pecrant
+# [ ! -s $HOME/bin/pecrant ] && curl https://raw.githubusercontent.com/gongo/pecrant/master/pecrant -o ~/bin/pecrant && chmod +x ~/bin/pecrant
+# alias veco='pecrant'
+
+# screeninator
+#[ -s "$HOME/.rbenv/shims/screeninator" ] && source "$HOME/.rbenv/shims/screeninator"
+
+# tmuxinator
+# [ -s $HOME/.tmuxinator/scripts/tmuxinator ] && source $HOME/.tmuxinator/scripts/tmuxinator
+
+
+# [ ! -d $GOPATH ] && mkdir $GOPATH
+# if which go > /dev/null; then
+#   export GOROOT=$(go env GOROOT)
+#   export PATH=$PATH:$GOROOT/bin
+#
+#   # goquery
+#   #go get github.com/PuerkitoBio/goquery
+#
+#   # ghq
+#   if ! which ghq > /dev/null; then
+#     go get github.com/motemen/ghq
+#     git config --global ghq.root ~/.ghq/src
+#   fi
+#
+#   # peco
+#   [ ! $(command -v peco) ] && go get github.com/peco/peco/cmd/peco
+#   if [ ! -d $HOME/.peco ]; then
+#     mkdir $HOME/.peco
+#   fi
+#   # gomigemo
+#   [ ! $(command -v gmigemo) ] && go get github.com/koron/gomigemo/cmd/gmigemo
+#   [ ! $(command -v migemogrep) ] && go get github.com/peco/migemogrep
+#   # gh-open
+#   [ ! $(command -v gh-open) ] && go get github.com/typester/gh-open
+#   # GoDoc
+#   [ ! $(command -v godoc) ] && go get golang.org/x/tools/cmd/godoc
+#   # jvgrep
+#   [ ! $(command -v jvgrep) ] && go get github.com/mattn/jvgrep
+#   # gomi
+#   [ ! $(command -v gomi) ] && go get github.com/b4b4r07/gomi
+#   # mkup
+#   [ ! $(command -v mkup) ] && go get github.com/mattn/mkup
+#
+#   # gitignore
+#   function _gi() { curl -s https://www.gitignore.io/api/$1 ;}
+#   alias gi='_gi $(_gi list | sed "s/,/\n/g" | peco )'
+# fi
+#
+# # android sdk
+# [ -d $HOME/bin/android-sdk-macosx/platform-tools ] && export PATH=$PATH:$HOME/bin/android-sdk-macosx/platform-tools
+# }}}
 #######################################################################################################
 
