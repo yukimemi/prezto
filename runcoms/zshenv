@@ -1,4 +1,9 @@
-#
+# =============================================================================
+# File        : zshenv
+# Author      : yukimemi
+# Last Change : 2016/04/19 07:10:19.
+# =============================================================================
+
 # Defines environment variables.
 #
 # Authors:
@@ -10,32 +15,39 @@ if [[ "$SHLVL" -eq 1 && ! -o LOGIN && -s "${ZDOTDIR:-$HOME}/.zprofile" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprofile"
 fi
 
-#######################################################################################################
+# ----------------------------------------------------------------------
 # if not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
-# Useful functions.# {{{
+# Useful functions. {{{1
 is_linux() { [[ $SHELL_PLATFORM == 'linux' || $SHELL_PLATFORM == 'bsd' ]]; }
 is_osx() { [[ $SHELL_PLATFORM == 'osx' ]]; }
 is_bsd() { [[ $SHELL_PLATFORM == 'bsd' || $SHELL_PLATFORM == 'osx' ]]; }
 is_cygwin() { [[ $SHELL_PLATFORM == 'cygwin' ]]; }
-# }}}
 
-# Env setting# {{{
+# Env setting {{{1
 
-# Compile zshrc.
+# Compile zshrc. {{{2
 if [ ! -f ~/.zshenv.zwc -o ~/.zshenv -nt ~/.zshenv.zwc ]; then
   zcompile ~/.zshenv
 fi
 
+# Basic envs. {{{2
 export SHELL=zsh
 export EDITOR=vim
 export VISUAL=vim
 export PAGER="less"
 
+# go. {{{2
+export GOPATH=$HOME/.ghq
+
+# anyenv. {{{2
+export ANYENV_ROOT=$HOME/.zplug/repos/riywo/anyenv
+
 # Unique path.
 typeset -U path cdpath fpath manpath
 
+# Path. {{{2
 path=(
   # Home.
   $HOME/bin(N-/)
@@ -50,9 +62,16 @@ path=(
   /usr/local/bin(N-/)
   # cabal.
   $HOME/.cabal/bin(N-/)
+  # go.
+  $GOPATH/bin(N-/)
+  $GOROOT/bin(N-/)
+  # anyenv.
+  $ANYENV_ROOT/bin
+
   $path
 )
 
+# Manpath. {{{2
 manpath=(
   # user.
   $HOME/local/share/man(N-/)
@@ -61,69 +80,47 @@ manpath=(
   # system.
   /usr/local/share/man(N-/)
   /usr/share/man(N-/)
+
   $manpath
 )
 
+# Fpath. {{{2
 fpath=(
   /usr/local/share/zsh-completions(N-/)
+
   $fpath
 )
 
-# sudo path.
+# sudo path. {{{2
 typeset -xT SUDO_PATH sudo_path
 typeset -U sudo_path
 sudo_path=(
   {,/usr/pkg,/usr/local,/usr}/sbin(N-/)
 )
 
-# less settings.
+# less settings. {{{2
 export LESS='-gj10 --no-init --quit-if-one-screen --RAW-CONTROL-CHARS'
 export LESSOPEN='| /usr/local/bin/src-hilite-lesspipe.sh %s'
 
-# Homebrew.
+# Homebrew. {{{2
 if is_osx; then
   export HOMEBREW_CASK_OPTS="--appdir=/Applications"
 fi
 
-# Java encoding
+# Java encoding. {{{2
 export JAVA_OPTS='-Dfile.encoding=UTF-8'
 
-# go
-export GOPATH=$HOME/.ghq
-export PATH=$PATH:$GOPATH/bin
-export GOROOT=$(go env GOROOT)
-export PATH=$PATH:$GOROOT/bin
-
-
-
-
-
-# anyenv
-# [ ! -d $HOME/.anyenv ] && git clone https://github.com/riywo/anyenv ~/.anyenv
-# export PATH=$HOME/.anyenv/bin:$PATH
-# eval "$(anyenv init -)"
-# [ ! -d $HOME/.anyenv/plugins ] && mkdir -p $HOME/.anyenv/plugins
-# [ ! -d $HOME/.anyenv/plugins/anyenv-update ] && git clone https://github.com/znz/anyenv-update.git ~/.anyenv/plugins/anyenv-update
+# anyenv.
+eval "$(anyenv init -)"
+[ ! -d $ANYENV_ROOT/plugins ] && mkdir -p $ANYENV_ROOT/plugins
+[ ! -d $ANYENV_ROOT/plugins/anyenv-update ] && git clone https://github.com/znz/anyenv-update.git $ANYENV_ROOT/plugins/anyenv-update
 # pyenv plugins
-# [ -d $HOME/.anyenv/envs/pyenv ] && [ ! -d $HOME/.anyenv/envs/pyenv/plugins/pyenv-virtualenv ] && git clone https://github.com/yyuu/pyenv-virtualenv.git ~/.anyenv/envs/pyenv/plugins/pyenv-virtualenv
+[ -d $ANYENV_ROOT/envs/pyenv ] && [ ! -d $ANYENV_ROOT/envs/pyenv/plugins/pyenv-virtualenv ] && git clone https://github.com/yyuu/pyenv-virtualenv.git $ANYENV_ROOT/envs/pyenv/plugins/pyenv-virtualenv
 # rbenv plugins
-# [ -d $HOME/.anyenv/envs/rbenv ] && [ ! -d $HOME/.anyenv/envs/rbenv/plugins/rbenv-binstubs ] && git clone git://github.com/ianheggie/rbenv-binstubs.git ~/.anyenv/envs/rbenv/plugins/rbenv-binstubs
-
-# node
-# if which npm > /dev/null; then
-#   [ ! $(command -v js-beautify) ] && npm i -g js-beautify
-# fi
+[ -d $ANYENV_ROOT/envs/rbenv ] && [ ! -d $ANYENV_ROOT/envs/rbenv/plugins/rbenv-binstubs ] && git clone git://github.com/ianheggie/rbenv-binstubs.git $ANYENV_ROOT/envs/rbenv/plugins/rbenv-binstubs
 
 # direnv
-# if which go > /dev/null; then
-#   if [ ! -d $HOME/.direnv ]; then
-#     git clone https://github.com/zimbatm/direnv ~/.direnv
-#     pushd ~/.direnv
-#     sudo make install
-#     popd
-#   fi
-#   eval "$(direnv hook zsh)"
-# fi
+eval "$(direnv hook zsh)"
 
 # lein
 # [ ! -s $HOME/bin/lein ] && curl https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein -o ~/bin/lein && chmod +x ~/bin/lein
@@ -139,12 +136,6 @@ export PATH=$PATH:$GOROOT/bin
 # tmuxinator
 # [ -s $HOME/.tmuxinator/scripts/tmuxinator ] && source $HOME/.tmuxinator/scripts/tmuxinator
 
-
-# [ ! -d $GOPATH ] && mkdir $GOPATH
-# if which go > /dev/null; then
-#   export GOROOT=$(go env GOROOT)
-#   export PATH=$PATH:$GOROOT/bin
-#
 #   # goquery
 #   #go get github.com/PuerkitoBio/goquery
 #
