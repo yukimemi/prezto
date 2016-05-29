@@ -1,7 +1,7 @@
 # =============================================================================
 # File        : zshenv
 # Author      : yukimemi
-# Last Change : 2016/05/21 23:42:51.
+# Last Change : 2016/05/30 06:55:28.
 # =============================================================================
 
 # Defines environment variables.
@@ -92,6 +92,9 @@ typeset -U sudo_path
 sudo_path=(
   {,/usr/pkg,/usr/local,/usr}/sbin(N-/)
 )
+
+# Other. {{{2
+export XDG_CONFIG_HOME="$HOME/.config"
 
 # less settings. {{{2
 export LESS='-gj10 --no-init --quit-if-one-screen --RAW-CONTROL-CHARS'
