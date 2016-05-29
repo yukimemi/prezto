@@ -1,7 +1,7 @@
 # =============================================================================
 # File        : zshrc
 # Author      : yukimemi
-# Last Change : 2016/04/17 11:29:11.
+# Last Change : 2016/05/24 23:04:30.
 # =============================================================================
 
 # Executes commands at the start of an interactive session.
@@ -18,7 +18,7 @@ fi
 # Customize to your needs...
 
 #######################################################################################################
-#{{{ Basic
+# Basic {{{1
 # LANG
 export LANG=ja_JP.UTF-8
 export LC_CTYPE="ja_JP.UTF-8"
@@ -50,9 +50,10 @@ RPROMPT+='  [$(pyenv_info)] ($(rbenv_info)) <$(ndenv_info)> {$(goenv_info)}'
 if [ ! -f ~/.zshrc.zwc -o ~/.zshrc -nt ~/.zshrc.zwc ]; then
     zcompile ~/.zshrc
 fi
-# }}}
+
+
 #######################################################################################################
-#{{{ key bind
+# key bind {{{1
 #bindkey -v
 
 # zsh vi key command line stack - Qiita
@@ -81,9 +82,10 @@ bindkey -M menuselect 'l' vi-forward-char
 # bindkey "" history-beginning-search-forward-end
 bindkey '^P' history-substring-search-up
 bindkey '^N' history-substring-search-down
-# }}}
+
+
 #######################################################################################################
-#{{{ history
+# history {{{1
 if [ -d ~/Dropbox ]; then
     HISTFILE=~/Dropbox/.zsh_history
 else
@@ -101,9 +103,10 @@ setopt hist_verify
 [ ! -d ~/.zsh/cache ] && mkdir -p ~/.zsh/cache
 zstyle ':completion:*' use-cache yes
 zstyle ':completion:*' cache-path ~/.zsh/cache
-# }}}
+
+
 #######################################################################################################
-#{{{ alias
+# alias {{{1
 # setting for OS type
 case "${OSTYPE}" in
     freebsd*|darwin*)
@@ -150,13 +153,21 @@ alias exifPng="exiftool '-FileName < FileModifyDate' -d /Volumes/new/backup/Phot
 alias exifM2ts="exiftool '-FileName < DateTimeOriginal' -d /Volumes/new/backup/m2ts/%Y-%m/%Y-%m-%d_%H-%M-%S%%-c.%%e *.(m2ts|M2TS)"
 alias exifRecDateTimeOriginal="exiftool -r '-FileName < DateTimeOriginal' -d /Volumes/new/backup/m2ts/%Y-%m/%Y-%m-%d_%H-%M-%S%%-c.%%e ."
 
+alias ghl='ghq list -p | p cd'
+alias gho='ghq list -p | p gh-open'
+
+alias pvim='find . -type f | p vim'
+alias pcd='find . -type d | p cd'
+alias pk=peco-proc
+alias vcd='cd $(pecrant dir)'
+
 # global alias
 alias -g L=' | lv'
 alias -g G=' | grep'
 alias -g P=' | peco'
-# }}}
+
 #######################################################################################################
-#{{{ function
+# function {{{1
 function chpwd() { ls -F }
 
 #function google() {# {{{
@@ -171,7 +182,6 @@ function chpwd() { ls -F }
     #fi
     #w3m http://www.google.co.jp/$opt
 #}
-# }}}
 
 function alc() {# {{{
     if [ $ != 0 ]; then
@@ -180,7 +190,6 @@ function alc() {# {{{
         w3m "http://www.alc.co.jp/"
     fi
 }
-# }}}
 
 cdup() {# {{{
     if [ -z "$BUFFER" ]; then
@@ -201,7 +210,6 @@ cdup() {# {{{
 }
 zle -N cdup
 bindkey '^^' cdup
-# }}}
 
 # print NORMAL or INSERT mode# {{{
 :<<'#COMMENT'
@@ -307,7 +315,6 @@ makemodal vi-cmd-mode          NORMAL
 
 unfunction makemodal
 #COMMENT
-# }}}
 
 # copy to clipboard (require pbcopy on mac and xcel on linux)# {{{
 # Example
@@ -325,9 +332,8 @@ elif which putclip >/dev/null 2>&1 ; then
     # Cygwin
     alias -g C='| putclip'
 fi
-# }}}
 
-# print command under the screen# {{{
+# print command under the screen {{{2
 if [ "$TERM" = "screen" ]; then
     #     chpwd () { echo -n "_`dirs`\\" }
     preexec() {
@@ -364,7 +370,6 @@ if [ "$TERM" = "screen" ]; then
         echo -n "k$cmd[1]:t\\") 2>/dev/null
     }
 fi
-# }}}
 
 gitio()
 {
@@ -372,16 +377,15 @@ gitio()
 }
 
 ############# only mac #########################
-# copy Japanese language on pbcopy# {{{
+# copy Japanese language on pbcopy {{{1
 #__CF_USER_TEXT_ENCODING=0x1F5:1:14    # original value
 if [ $OSTYPE = "darwin*" ]; then
     __CF_USER_TEXT_ENCODING=0x1F5:0x8000100:14
     export __CF_USER_TEXT_ENCODING
 fi
-# }}}
-# }}}
+
 #######################################################################################################
-#{{{ plugins
+# plugins {{{1
 zstyle ':filter-select' case-insensitive yes
 autoload -Uz chpwd_recent_dirs cdr add-zsh-hook
 add-zsh-hook chpwd chpwd_recent_dirs
@@ -389,7 +393,7 @@ zstyle ':chpwd:*' recent-dirs-max 5000
 zstyle ':chpwd:*' recent-dirs-default yes
 zstyle ':completion:*' recent-dirs-insert both
 
-# peco # {{{
+# peco {{{2
 function peco-snippets() {
     BUFFER=$(grep -v "^#" ~/.peco-snippets | peco)
     zle clear-screen
@@ -412,7 +416,7 @@ function jvvim() {
 }
 bindkey '^s' peco-snippets
 
-# Use anyframe
+# Use anyframe {{{2
 bindkey '^r' anyframe-widget-put-history
 bindkey '^@' anyframe-widget-cdr
 bindkey '^k' anyframe-widget-kill
@@ -428,55 +432,68 @@ function p() {
     done
 }
 
-# ghq
-alias ghl='ghq list -p | p cd'
-alias gho='ghq list -p | p gh-open'
 
-alias pvim='find . -type f | p vim'
-alias pcd='find . -type d | p cd'
-alias pk=peco-proc
-alias vcd='cd $(pecrant dir)'
-# }}}
+# zplug {{{1
+# Check if zplug is installed
+if [ ! -d ~/.zplug ]; then
+  curl -sL get.zplug.sh | zsh
+fi
 
-# zplug
-[[ -d ~/.zplug ]] || {
-  curl -fLo ~/.zplug/zplug --create-dirs https://git.io/zplug
-  source ~/.zplug/zplug && zplug update --self
-}
-source ~/.zplug/zplug
-zplug "riywo/anyenv"
-zplug "zimbatm/direnv", do:"sudo make install"
+# Essential
+source ~/.zplug/init.zsh
+
+zplug "riywo/anyenv", as:command, use:bin/anyenv
+zplug "zimbatm/direnv", hook-build:"make install"
 zplug "mollifier/anyframe"
 zplug "mollifier/cd-gitroot"
-zplug "stedolan/jq", from:gh-r, as:command \
-    | zplug "b4b4r07/emoji-cli", if:"which jq"
-zplug "b4b4r07/enhancd", of:enhancd.sh
-zplug "hchbaw/opp.zsh", do:"__zsh_version 5.0.8"
+zplug "b4b4r07/enhancd", use:init.sh
 zplug "zsh-users/zsh-syntax-highlighting", nice:10
 zplug "zsh-users/zsh-history-substring-search"
-zplug "junegunn/fzf-bin", as:command, from:gh-r, file:fzf
-zplug "peco/peco", as:command, from:gh-r, of:"*amd64*"
+zplug "junegunn/fzf-bin", as:command, from:gh-r, rename-to:fzf
+zplug "peco/peco", as:command, from:gh-r
 zplug "b4b4r07/zsh-gomi"
-zplug "mattn/files", do:"go get github.com/mattn/files"
+zplug "mattn/files", hook-build:"go get github.com/mattn/files"
 zplug "zsh-users/zsh-completions"
-zplug "yuroyoro/git-ignore", as:command
+zplug "yuroyoro/git-ignore", as:command, rename-to:gi
+zplug "b4b4r07/ssh-keyreg", as:command
+zplug "b4b4r07/emoji-cli", if:"which jq"
+zplug "stedolan/jq", \
+    from:gh-r, \
+    as:command, \
+    rename-to:jq, \
+    on:"b4b4r07/emoji-cli"
 
+# Install packages that have not been installed yet
 if ! zplug check --verbose; then
-  printf "Install? [y/N]: "
-  if read -q; then
-      echo; zplug install
-  else
-      echo
-  fi
+    printf "Install? [y/N]: "
+    if read -q; then
+        echo; zplug install
+    else
+        echo
+    fi
 fi
-zplug load
-# }}}
+
+zplug load --verbose
+
+# anyenv {{{1
+export ANYENV_ROOT=$ZPLUG_REPOS/riywo/anyenv
+eval "$(anyenv init -)"
+[ ! -d $ANYENV_ROOT/plugins ] && mkdir -p $ANYENV_ROOT/plugins
+[ ! -d $ANYENV_ROOT/plugins/anyenv-update ] && git clone https://github.com/znz/anyenv-update.git $ANYENV_ROOT/plugins/anyenv-update
+# pyenv plugins
+[ -d $ANYENV_ROOT/envs/pyenv ] && [ ! -d $ANYENV_ROOT/envs/pyenv/plugins/pyenv-virtualenv ] && git clone https://github.com/yyuu/pyenv-virtualenv.git $ANYENV_ROOT/envs/pyenv/plugins/pyenv-virtualenv
+# rbenv plugins
+[ -d $ANYENV_ROOT/envs/rbenv ] && [ ! -d $ANYENV_ROOT/envs/rbenv/plugins/rbenv-binstubs ] && git clone git://github.com/ianheggie/rbenv-binstubs.git $ANYENV_ROOT/envs/rbenv/plugins/rbenv-binstubs
+
+# direnv {{{1
+eval "$(direnv hook zsh)"
+
+
 #######################################################################################################
 #{{{ local conf
 if [ -e ~/.zshrc_private ]; then
     source ~/.zshrc_private
 fi
-# }}}
 
 # ssh
 # export SSH_KEY_PATH="~/.ssh/dsa_id"

@@ -1,7 +1,7 @@
 # =============================================================================
 # File        : zshenv
 # Author      : yukimemi
-# Last Change : 2016/04/19 07:10:19.
+# Last Change : 2016/05/21 23:42:51.
 # =============================================================================
 
 # Defines environment variables.
@@ -41,9 +41,6 @@ export PAGER="less"
 # go. {{{2
 export GOPATH=$HOME/.ghq
 
-# anyenv. {{{2
-export ANYENV_ROOT=$HOME/.zplug/repos/riywo/anyenv
-
 # Unique path.
 typeset -U path cdpath fpath manpath
 
@@ -65,8 +62,6 @@ path=(
   # go.
   $GOPATH/bin(N-/)
   $GOROOT/bin(N-/)
-  # anyenv.
-  $ANYENV_ROOT/bin
 
   $path
 )
@@ -109,18 +104,6 @@ fi
 
 # Java encoding. {{{2
 export JAVA_OPTS='-Dfile.encoding=UTF-8'
-
-# anyenv.
-eval "$(anyenv init -)"
-[ ! -d $ANYENV_ROOT/plugins ] && mkdir -p $ANYENV_ROOT/plugins
-[ ! -d $ANYENV_ROOT/plugins/anyenv-update ] && git clone https://github.com/znz/anyenv-update.git $ANYENV_ROOT/plugins/anyenv-update
-# pyenv plugins
-[ -d $ANYENV_ROOT/envs/pyenv ] && [ ! -d $ANYENV_ROOT/envs/pyenv/plugins/pyenv-virtualenv ] && git clone https://github.com/yyuu/pyenv-virtualenv.git $ANYENV_ROOT/envs/pyenv/plugins/pyenv-virtualenv
-# rbenv plugins
-[ -d $ANYENV_ROOT/envs/rbenv ] && [ ! -d $ANYENV_ROOT/envs/rbenv/plugins/rbenv-binstubs ] && git clone git://github.com/ianheggie/rbenv-binstubs.git $ANYENV_ROOT/envs/rbenv/plugins/rbenv-binstubs
-
-# direnv
-eval "$(direnv hook zsh)"
 
 # lein
 # [ ! -s $HOME/bin/lein ] && curl https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein -o ~/bin/lein && chmod +x ~/bin/lein
