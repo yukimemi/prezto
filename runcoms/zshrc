@@ -1,7 +1,7 @@
 # =============================================================================
 # File        : zshrc
 # Author      : yukimemi
-# Last Change : 2016/05/24 23:04:30.
+# Last Change : 2016/05/29 09:44:42.
 # =============================================================================
 
 # Executes commands at the start of an interactive session.
@@ -80,8 +80,6 @@ bindkey -M menuselect 'l' vi-forward-char
 # zle -N history-beginning-search-forward-end history-search-end
 # bindkey "" history-beginning-search-backward-end
 # bindkey "" history-beginning-search-forward-end
-bindkey '^P' history-substring-search-up
-bindkey '^N' history-substring-search-down
 
 
 #######################################################################################################
@@ -475,6 +473,10 @@ fi
 
 zplug load --verbose
 
+# substring-search
+bindkey '^P' history-substring-search-up
+bindkey '^N' history-substring-search-down
+
 # anyenv {{{1
 export ANYENV_ROOT=$ZPLUG_REPOS/riywo/anyenv
 eval "$(anyenv init -)"
@@ -497,3 +499,4 @@ fi
 
 # ssh
 # export SSH_KEY_PATH="~/.ssh/dsa_id"
+
