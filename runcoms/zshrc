@@ -116,6 +116,7 @@ case "${OSTYPE}" in
         alias screensaver='open /System/Library/Frameworks/ScreenSaver.framework/Resources/ScreenSaverEngine.app'
         alias nw="~/Applications/node-webkit.app/Contents/MacOS/node-webkit"
         alias mplayerx='open -a MplayerX'
+        alias grep='ggrep'
         ;;
     linux*|cygwin)
         alias ls='ls --color=auto'
@@ -413,7 +414,7 @@ function jvvim() {
         jvgrep $@ . | peco | awk -F : '{system("vim -c " $2 " " "\"" $1 "\"")}'
     fi
 }
-bindkey '^s' peco-snippets
+# bindkey '^s' peco-snippets
 
 # Use anyframe {{{2
 bindkey '^r' anyframe-widget-put-history
@@ -425,10 +426,11 @@ bindkey '^a' anyframe-widget-select-widget
 
 unalias p
 function p() {
-    peco | while read line
-    do
-        $@ $line
-    done
+  peco | while read line
+  do
+    echo "Exec: [$@ $line]"
+    $@ $line
+  done
 }
 
 
@@ -450,7 +452,8 @@ zplug "zsh-users/zsh-syntax-highlighting", nice:10
 zplug "zsh-users/zsh-history-substring-search"
 zplug "junegunn/fzf-bin", as:command, from:gh-r, rename-to:fzf
 zplug "peco/peco", as:command, from:gh-r
-zplug "b4b4r07/zsh-gomi"
+# zplug "b4b4r07/zsh-gomi"
+zplug "b4b4r07/gomi", as:command, from:gh-r
 zplug "mattn/files", hook-build:"go get github.com/mattn/files"
 zplug "mattn/jvgrep", hook-build:"go get github.com/mattn/jvgrep"
 zplug "motemen/ghq", as:command, from:gh-r
@@ -479,6 +482,10 @@ zplug load --verbose
 # substring-search
 bindkey '^P' history-substring-search-up
 bindkey '^N' history-substring-search-down
+
+
+# peco keybind.
+bindkey '^s' peco-snippets
 
 # anyenv {{{1
 export ANYENV_ROOT=$ZPLUG_REPOS/riywo/anyenv
