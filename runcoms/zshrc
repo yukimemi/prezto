@@ -130,7 +130,7 @@ alias vimfiler='vim -c VimFilerDouble'
 alias mvimfiler='mvim -c VimFilerDouble'
 alias vimshell='vim -c VimShell'
 alias mvimshell='mvim -c VimShell'
-alias tweetvim='vim +TweetVimUserStream'
+alias tweetvim='nvim +TweetVimUserStream'
 alias mtweetvim='mvim +TweetVimUserStream'
 alias lingrvim='vim +LingrLaunch'
 alias j6uil='vim +J6uil'
@@ -508,3 +508,5 @@ fi
 
 # ssh
 # export SSH_KEY_PATH="~/.ssh/dsa_id"
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
