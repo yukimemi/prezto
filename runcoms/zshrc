@@ -437,19 +437,20 @@ function p() {
 # zplug {{{1
 # Check if zplug is installed
 if [ ! -d ~/.zplug ]; then
-  curl -sL get.zplug.sh | zsh
+  curl -sL zplug.sh/installer | zsh
 fi
 
 # Essential
 source ~/.zplug/init.zsh
 
-# zplug "riywo/anyenv", as:command, use:bin/anyenv
+zplug "riywo/anyenv", as:command, use:bin/anyenv
 zplug "zimbatm/direnv", hook-build:"make install"
 zplug "mollifier/anyframe"
 zplug "mollifier/cd-gitroot"
 zplug "b4b4r07/enhancd", use:init.sh
 zplug "zsh-users/zsh-syntax-highlighting", nice:10
 zplug "zsh-users/zsh-history-substring-search"
+zplug "zsh-users/zsh-autosuggestions"
 zplug "junegunn/fzf-bin", as:command, from:gh-r, rename-to:fzf
 zplug "peco/peco", as:command, from:gh-r
 # zplug "b4b4r07/zsh-gomi"
@@ -510,3 +511,4 @@ fi
 # export SSH_KEY_PATH="~/.ssh/dsa_id"
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
