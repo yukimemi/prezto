@@ -484,6 +484,8 @@ zplug load --verbose
 bindkey '^P' history-substring-search-up
 bindkey '^N' history-substring-search-down
 
+# autosuggestions
+bindkey '^ ' autosuggest-accept
 
 # peco keybind.
 bindkey '^s' peco-snippets
