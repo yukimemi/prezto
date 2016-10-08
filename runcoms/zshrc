@@ -443,6 +443,7 @@ fi
 # Essential
 source ~/.zplug/init.zsh
 
+zplug "zplug/zplug"
 zplug "riywo/anyenv", as:command, use:bin/anyenv
 zplug "zimbatm/direnv", hook-build:"make install"
 zplug "mollifier/anyframe"
@@ -450,7 +451,7 @@ zplug "mollifier/cd-gitroot"
 zplug "b4b4r07/enhancd", use:init.sh
 zplug "zsh-users/zsh-syntax-highlighting", nice:10
 zplug "zsh-users/zsh-history-substring-search"
-zplug "zsh-users/zsh-autosuggestions"
+# zplug "zsh-users/zsh-autosuggestions"
 zplug "junegunn/fzf-bin", as:command, from:gh-r, rename-to:fzf
 zplug "peco/peco", as:command, from:gh-r
 zplug "b4b4r07/zsh-gomi"
@@ -515,5 +516,9 @@ fi
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
 # Git commit template
-[ ! -d ~/.ghq/src/gist.github.com/nownabe/85d8595fd142adc426fbfaf2bab015e0 ] && ghq get -u https://gist.github.com/nownabe/85d8595fd142adc426fbfaf2bab015e0; cd ~/.ghq/src/gist.github.com/nownabe/85d8595fd142adc426fbfaf2bab015e0 && git config --global commit.template ~/.ghq/src/gist.github.com/nownabe/85d8595fd142adc426fbfaf2bab015e0/.commit_template
+if [ ! -d "${HOME}/.ghq/src/gist.github.com/nownabe/85d8595fd142adc426fbfaf2bab015e0" ]; then
+  echo "Clone commit template"
+  ghq get -u https://gist.github.com/nownabe/85d8595fd142adc426fbfaf2bab015e0
+  git config --global commit.template ~/.ghq/src/gist.github.com/nownabe/85d8595fd142adc426fbfaf2bab015e0/.commit_template
+fi
 

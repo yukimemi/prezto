@@ -65,6 +65,8 @@ path=(
   # normal.
   /usr/bin(N-/)
   /usr/sbin(N-/)
+  # sbin
+  /sbin(N-/)
 
   $path
 )
