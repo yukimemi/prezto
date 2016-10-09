@@ -505,7 +505,7 @@ eval "$(anyenv init -)"
 eval "$(direnv hook zsh)"
 
 #######################################################################################################
-#{{{ local conf
+#{{{1 local conf
 if [ -e ~/.zshrc_private ]; then
     source ~/.zshrc_private
 fi

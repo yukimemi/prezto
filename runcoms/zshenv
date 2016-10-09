@@ -164,3 +164,11 @@ export JAVA_OPTS='-Dfile.encoding=UTF-8'
 # [ -d $HOME/bin/android-sdk-macosx/platform-tools ] && export PATH=$PATH:$HOME/bin/android-sdk-macosx/platform-tools
 # }}}
 #######################################################################################################
+
+#{{{1 Mac
+if is_osx; then
+  infocmp $TERM | sed 's/kbs=^[hH]/kbs=\\177/' > $TERM.ti
+  tic $TERM.ti
+fi
+
+
