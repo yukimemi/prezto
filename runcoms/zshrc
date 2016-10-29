@@ -1,7 +1,7 @@
 # =============================================================================
 # File        : zshrc
 # Author      : yukimemi
-# Last Change : 2016/06/25 15:41:31.
+# Last Change : 2016/10/29 21:07:07.
 # =============================================================================
 
 # Executes commands at the start of an interactive session.
@@ -44,7 +44,8 @@ function goenv_info {
         goenv version | sed -e 's/ .*//'
     fi
 }
-RPROMPT+='  [$(pyenv_info)] ($(rbenv_info)) <$(ndenv_info)> {$(goenv_info)}'
+# RPROMPT+='  [$(pyenv_info)] ($(rbenv_info)) <$(ndenv_info)> {$(goenv_info)}'
+RPROMPT+='  [$(pyenv_info)] ($(rbenv_info)) <$(ndenv_info)>'
 
 # compile zshrc
 if [ ! -f ~/.zshrc.zwc -o ~/.zshrc -nt ~/.zshrc.zwc ]; then
@@ -152,7 +153,8 @@ alias exifPng="exiftool '-FileName < FileModifyDate' -d /Volumes/new/backup/Phot
 alias exifM2ts="exiftool '-FileName < DateTimeOriginal' -d /Volumes/new/backup/m2ts/%Y-%m/%Y-%m-%d_%H-%M-%S%%-c.%%e *.(m2ts|M2TS)"
 alias exifRecDateTimeOriginal="exiftool -r '-FileName < DateTimeOriginal' -d /Volumes/new/backup/m2ts/%Y-%m/%Y-%m-%d_%H-%M-%S%%-c.%%e ."
 
-alias ghl='ghq list -p | p cd'
+# alias ghl='ghq list -p | p cd'
+alias ghl='ghq list -p | f cd'
 alias gho='ghq list -p | p gh-open'
 
 alias pvim='find . -type f | p vim'
@@ -433,6 +435,14 @@ function p() {
   done
 }
 
+function f()
+{
+  fzf | while read line
+  do
+    echo "Exec: [$@ $line]"
+    $@ $line
+  done
+}
 
 # zplug {{{1
 # Check if zplug is installed
@@ -486,7 +496,7 @@ bindkey '^P' history-substring-search-up
 bindkey '^N' history-substring-search-down
 
 # autosuggestions
-bindkey '^ ' autosuggest-accept
+# bindkey '^ ' autosuggest-accept
 
 # peco keybind.
 bindkey '^s' peco-snippets
